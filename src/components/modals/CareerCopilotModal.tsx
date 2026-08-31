@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { usePathwayStore } from '../../store/pathwayStore';
-import { GoogleGenAI } from '@google/genai';
 import { 
   X, 
   Sparkles, 
@@ -61,7 +60,6 @@ export const CareerCopilotModal: React.FC = () => {
       let botReply = '';
 
       if (geminiApiKey && geminiApiKey.length > 10) {
-        const ai = new GoogleGenAI({ apiKey: geminiApiKey });
         const systemPrompt = `You are the lead AI Career Counselor for Indian students navigating career pathways.
 Current Context:
 Target Career: ${activeRole.title} (${activeRole.domainName})
@@ -70,13 +68,28 @@ Stream Details: ${activeRole.streams[selectedStream]?.approachPhilosophy || ''}
 
 Provide concise, highly actionable, empathetic, and factual Indian academic advice citing real entrance exams (e.g. JEE, NEET, CUET, CLAT, FTII, POLYCET, ECET), eligibility rules, backup lateral switches, and preparation timetables. Keep answers under 3 paragraphs with bullet points.`;
 
-        const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
-          contents: `${systemPrompt}\n\nStudent Question: ${textToSend}`
-        });
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [
+                {
+                  parts: [{ text: `${systemPrompt}\n\nStudent Question: ${textToSend}` }]
+                }
+              ]
+            })
+          }
+        );
 
-        botReply = response.text || 'I analyzed your query based on current Indian academic regulations.';
-      } else {
+        if (response.ok) {
+          const data = await response.json();
+          botReply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'I analyzed your query based on current Indian academic regulations.';
+        }
+      }
+
+      if (!botReply) {
         // Intelligent built-in heuristic advisor responses
         const q = textToSend.toLowerCase();
         if (q.includes('fail') || q.includes('backup') || q.includes('qualify')) {

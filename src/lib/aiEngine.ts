@@ -1,4 +1,3 @@
-import { GoogleGenAI } from '@google/genai';
 import { CareerRole, StreamType } from '../types/pathway';
 import { CareerRoleSchema } from './pathwaySchema';
 import { CURATED_CAREER_PATHWAYS } from '../data/curatedPathways';
@@ -15,7 +14,7 @@ const STREAM_THEMES = {
 
 /**
  * Generates an intelligent multi-stream pathway for any arbitrary or emerging career passion
- * using Google Gemini API or intelligent synthetic heuristics.
+ * using Google Gemini REST API or intelligent synthetic heuristics.
  */
 export async function generateDynamicCareerPathway(query: string, apiKey?: string): Promise<CareerRole> {
   const normalizedQuery = query.trim().toLowerCase();
@@ -32,10 +31,9 @@ export async function generateDynamicCareerPathway(query: string, apiKey?: strin
     return CURATED_CAREER_PATHWAYS[existingKey];
   }
 
-  // 2. If Gemini API Key is available, invoke live Gemini model with structured JSON Schema
+  // 2. If Gemini API Key is provided, invoke official Gemini REST endpoint directly (zero dependency)
   if (apiKey && apiKey.length > 10) {
     try {
-      const ai = new GoogleGenAI({ apiKey });
       const prompt = `You are the lead academic architect for the Indian National Multi-Stream Career Engine.
 Analyze the user's passion/dream role: "${query}".
 Generate a complete, rigorous, and authentic multi-stream educational roadmap in strict JSON format.
@@ -55,25 +53,35 @@ For each stream include:
 - Pros, cons, metrics (time to job, financial investment, competition level, flexibility score 1-10, practical ratio 1-10)
 - Starting salary spectrum (INR Lakhs Per Annum)
 
-Output pure JSON matching the CareerRole schema without markdown ticks if possible.`;
+Output pure JSON matching the CareerRole schema without markdown ticks.`;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json'
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              responseMimeType: 'application/json'
+            }
+          })
         }
-      });
+      );
 
-      if (response.text) {
-        const rawJson = JSON.parse(response.text);
-        const parsed = CareerRoleSchema.safeParse(rawJson);
-        if (parsed.success) {
-          return parsed.data as CareerRole;
+      if (response.ok) {
+        const data = await response.json();
+        const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (rawText) {
+          const rawJson = JSON.parse(rawText);
+          const parsed = CareerRoleSchema.safeParse(rawJson);
+          if (parsed.success) {
+            return parsed.data as CareerRole;
+          }
         }
       }
     } catch (e) {
-      console.warn('Gemini API call fell back to local synthesis:', e);
+      console.warn('Gemini REST call fell back to local synthesis:', e);
     }
   }
 

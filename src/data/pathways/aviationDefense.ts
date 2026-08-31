@@ -1,0 +1,441 @@
+import { CareerRole } from '../../types/pathway';
+
+const STREAM_THEMES = {
+  MPC: { primary: '#3b82f6', border: 'border-blue-500/30', bg: 'bg-blue-500/10', text: 'text-blue-400', glow: 'shadow-blue-500/20' },
+  BiPC: { primary: '#10b981', border: 'border-emerald-500/30', bg: 'bg-emerald-500/10', text: 'text-emerald-400', glow: 'shadow-emerald-500/20' },
+  MEC_CEC: { primary: '#f59e0b', border: 'border-amber-500/30', bg: 'bg-amber-500/10', text: 'text-amber-400', glow: 'shadow-amber-500/20' },
+  HEC: { primary: '#a855f7', border: 'border-purple-500/30', bg: 'bg-purple-500/10', text: 'text-purple-400', glow: 'shadow-purple-500/20' },
+  POLYTECHNIC: { primary: '#06b6d4', border: 'border-cyan-500/30', bg: 'bg-cyan-500/10', text: 'text-cyan-400', glow: 'shadow-cyan-500/20' },
+  VOCATIONAL_GUILD: { primary: '#f43f5e', border: 'border-rose-500/30', bg: 'bg-rose-500/10', text: 'text-rose-400', glow: 'shadow-rose-500/20' }
+};
+
+export const AVIATION_DEFENSE_PATHWAYS: Record<string, CareerRole> = {
+  commercial_pilot: {
+    id: 'commercial_pilot',
+    title: 'Commercial Airline Pilot (CPL)',
+    slug: 'commercial-pilot',
+    domainId: 'aviation_defense_maritime',
+    domainName: 'Aviation, Defense & Maritime',
+    shortDescription: 'Command commercial passenger and cargo airliners across international flight routes, mastering aerodynamics, navigation, and cockpit safety.',
+    holisticInsight: 'Pilot training is accessible directly through 10+2 MPC (IGRUA / Cadet Pilot Programs), BiPC (via NIOS Physics/Maths bridge exams), Polytechnic Diploma (Aeronautical Diploma -> CPL), or defense pathways (NDA Air Force Wing -> Commercial conversion).',
+    iconName: 'Plane',
+    tags: ['Aviation', 'Pilot', 'CPL', 'IGRUA', 'DGCA', 'Cadet Pilot', 'Airlines'],
+    marketDemand: 'HIGH',
+    streams: {
+      MPC: {
+        streamType: 'MPC',
+        streamName: 'Aviation Physics & Cadet Pilot Route (Direct CPL)',
+        streamShortDesc: '10+2 PCM -> IGRUA / Airline Cadet Pilot Program (Indigo/Air India) -> CPL',
+        badgeLabel: 'Fast Direct Cadet Cockpit Entry',
+        themeColor: STREAM_THEMES.MPC,
+        approachPhilosophy: 'Direct pathway from 10+2 MPC with 50% in Physics and Maths, clearing DGCA ground exams and flying 200 hours at DGCA-approved flying schools or premier government academy IGRUA.',
+        metrics: { timeToFirstJobYears: 2.5, financialInvestment: 'PREMIUM', competitionLevel: 'VERY_HIGH', flexibilityScore: 7, practicalToTheoryRatio: 9 },
+        pros: ['Fastest route to first officer cockpit seat (~2 to 3 years after 10+2)', 'High starting salary with fast captain promotion track (₹18L to ₹75L+ within 5 years)', 'Airline Cadet Programs offer Letter of Intent (LOI) guaranteed job upon CPL completion'],
+        cons: ['High initial training capital (₹45L - ₹85L for flying hours, Type Rating & DGCA licensing)', 'Strict DGCA Class 1 Medical fitness standards'],
+        entryJobRoles: ['Junior First Officer (Airbus A320 / Boeing 737)', 'Flight Instructor (CFI)', 'Charter Pilot'],
+        fiveYearTrajectory: 'Airline Captain / Line Training Captain (LTC) (₹60L - ₹1.2Cr+).',
+        salarySpectrumLpa: { entryMin: 18, entryMax: 32, experiencedPeak: 120 },
+        lateralSwitches: [],
+        milestones: [
+          {
+            id: 'pilot_mpc_1', phase: 'PHASE_0_10TH', phaseLabel: '10th Standard',
+            title: '10th Board & DGCA Class 2 Medical Check',
+            subtitle: 'Ensure eyesight (6/6 with or without correction) and physical fitness',
+            description: 'Pass 10th standard with strong score in science and mathematics. Undergo preliminary vision and hearing checks.',
+            mandatoryEligibility: ['Pass 10th Board', 'Basic eyesight checks'],
+            examGateways: [],
+            recommendedInstitutions: ['Secondary Boards'],
+            skillsToAcquire: ['Spatial Awareness', 'Mental Arithmetic'],
+            estimatedCostRange: 'Standard',
+            keyActionTip: 'Undergo a DGCA Class 2 Medical examination by an empaneled DGCA doctor before investing heavily.'
+          },
+          {
+            id: 'pilot_mpc_2', phase: 'PHASE_1_STREAM', phaseLabel: '10+2 MPC',
+            title: '10+2 Intermediate MPC (Mandatory Physics & Maths)',
+            subtitle: 'Secure minimum 50% aggregate in Physics and Mathematics for DGCA eligibility',
+            durationYears: '2 Years',
+            description: 'Focus on mechanics, vectors, atmospheric physics, trigonometry, and spoken radio English fluency.',
+            mandatoryEligibility: ['10+2 PCM pass with minimum 50% in Physics and Maths'],
+            examGateways: ['IGRUA_CPL'],
+            recommendedInstitutions: ['Junior Colleges / CBSE 10+2'],
+            skillsToAcquire: ['Aerodynamic Principles', 'Cockpit Crew Resource Management Basics', 'ICAO English Level 4+ Fluency'],
+            estimatedCostRange: '₹40,000 - ₹1.2L',
+            keyActionTip: 'Prepare for the IGRUA Entrance Exam or apply for Airline Cadet Pilot Programs (IndiGo, Air India).'
+          },
+          {
+            id: 'pilot_mpc_3', phase: 'PHASE_2_EXAMS', phaseLabel: 'Flying Gateways',
+            title: 'Clear DGCA CPL Ground Exams & IGRUA / Cadet Selection',
+            subtitle: '5 DGCA Theory Papers: Air Navigation, Aviation Meteorology, Air Regulations, Technical General, and Technical Specific + RTR(A)',
+            description: 'Clear computer-based DGCA exams and Radio Telephony Restricted (Aero) license conducted by WPC Ministry of Comm.',
+            mandatoryEligibility: ['DGCA Computer Number registration and Class 1 Medical fitness certificate'],
+            examGateways: ['IGRUA_CPL'],
+            recommendedInstitutions: ['IGRUA Rae Bareli', 'NFTI Gondia', 'Chimes Aviation Academy'],
+            skillsToAcquire: ['Radio Telephony Phraseology', 'Cross-Country Navigation Calculations', 'METAR & TAF Weather Decoding'],
+            estimatedCostRange: '₹12,000 (DGCA Exam fees) + Ground School prep',
+            keyActionTip: 'Clear all 5 DGCA ground exams before logging heavy flying hours to save living expenses.'
+          },
+          {
+            id: 'pilot_mpc_4', phase: 'PHASE_3_DEGREE', phaseLabel: '200 Hours Flying & Type Rating',
+            title: '200 Hours Flight Training + A320 / B737 Type Rating',
+            subtitle: 'Solo flights, instrument rating (IR), multi-engine rating (MER), and full flight simulator (FFS) Type Rating',
+            durationYears: '1.5 to 2 Years',
+            description: 'Log mandatory 200 hours to obtain Commercial Pilot License (CPL). Complete Type Rating on Airbus A320 or Boeing 737.',
+            mandatoryEligibility: ['Completion of flying syllabus and simulator checks'],
+            examGateways: [],
+            recommendedInstitutions: ['IGRUA', 'FTOs in India, USA, South Africa, New Zealand'],
+            skillsToAcquire: ['Emergency Procedures Management', 'Crosswind Landings', 'Glass Cockpit Navigation'],
+            estimatedCostRange: '₹45L - ₹65L (CPL Flying) + ₹18L - ₹25L (Type Rating)',
+            keyActionTip: 'Flying training in flight schools with consistent clear weather speeds up completion to 12 months.'
+          },
+          {
+            id: 'pilot_mpc_5', phase: 'PHASE_5_OUTCOME', phaseLabel: 'Industry Outcomes',
+            title: 'First Officer at Major Commercial Airline',
+            subtitle: 'Flying domestic and international commercial routes',
+            description: 'Join IndiGo, Air India, Akasa Air, or international carriers as Junior First Officer, clocking 1,500 hours towards Airline Transport Pilot License (ATPL) and Captaincy.',
+            mandatoryEligibility: ['DGCA CPL, Type Rating Endorsement, and Airline Simulator Line Checks'],
+            examGateways: [],
+            recommendedInstitutions: ['Commercial Passenger Airlines & Cargo Carriers'],
+            skillsToAcquire: ['High-Altitude Weather Avoidance', 'International Oceanic Navigation'],
+            estimatedCostRange: 'Zero (High Earning Phase)',
+            keyActionTip: 'Maintain pristine discipline in rest cycles and quarterly DGCA medical checks.'
+          }
+        ]
+      },
+      BiPC: {
+        streamType: 'BiPC',
+        streamName: 'Life Sciences to Aviation Bridge Route (via NIOS Maths)',
+        streamShortDesc: 'BiPC + NIOS Single-Subject Mathematics On-Demand Exam -> CPL',
+        badgeLabel: 'BiPC Bridge to Pilot Wings',
+        themeColor: STREAM_THEMES.BiPC,
+        approachPhilosophy: 'Students from BiPC stream can fulfill DGCA commercial pilot prerequisites by clearing a single on-demand Mathematics exam through National Institute of Open Schooling (NIOS).',
+        metrics: { timeToFirstJobYears: 3, financialInvestment: 'PREMIUM', competitionLevel: 'MODERATE', flexibilityScore: 9, practicalToTheoryRatio: 9 },
+        pros: ['BiPC students can fulfill aviation requirements without repeating 11th & 12th grade', 'Deep biological/medical knowledge helps master Aviation Medicine & High-Altitude Human Physiology easily', 'Keeps healthcare/biotech careers active as parallel backup'],
+        cons: ['Requires preparing for 12th-level Mathematics independently via NIOS'],
+        entryJobRoles: ['Junior First Officer', 'Air Ambulance Medical Evac Pilot', 'Flying Instructor'],
+        fiveYearTrajectory: 'Commercial Airline Captain & Aviation Human Factors Trainer (₹50L - ₹1.1Cr+).',
+        salarySpectrumLpa: { entryMin: 18, entryMax: 30, experiencedPeak: 110 },
+        lateralSwitches: [],
+        milestones: [
+          {
+            id: 'pilot_bipc_1', phase: 'PHASE_0_10TH', phaseLabel: '10th Standard',
+            title: '10th Board with Biology & Science',
+            subtitle: 'Pass 10th standard with strong foundation',
+            description: 'Pass 10th board with high grades in science and mathematics.',
+            mandatoryEligibility: ['Pass 10th Board'],
+            examGateways: [],
+            recommendedInstitutions: ['Secondary Boards'],
+            skillsToAcquire: ['Basic Maths & Physics'],
+            estimatedCostRange: 'Standard',
+            keyActionTip: 'Check DGCA medical vision criteria early.'
+          },
+          {
+            id: 'pilot_bipc_2', phase: 'PHASE_1_STREAM', phaseLabel: '10+2 BiPC + NIOS Maths',
+            title: '10+2 BiPC with NIOS Mathematics Bridge',
+            subtitle: 'Complete 10+2 BiPC and clear NIOS Class 12 Mathematics',
+            durationYears: '2 Years',
+            description: 'Study BiPC for intermediate and appear for NIOS on-demand single paper in Mathematics to satisfy DGCA criteria.',
+            mandatoryEligibility: ['10+2 BiPC + NIOS 12th Mathematics mark sheet with min 50%'],
+            examGateways: ['IGRUA_CPL'],
+            recommendedInstitutions: ['Junior College + NIOS'],
+            skillsToAcquire: ['Calculus & Vectors for Navigation', 'Human Physiology in High Altitude / Hypoxia'],
+            estimatedCostRange: '₹35,000 + ₹3,000 (NIOS ODE fee)',
+            keyActionTip: 'Obtain the official combined verification certificate from DGCA New Delhi.'
+          },
+          {
+            id: 'pilot_bipc_3', phase: 'PHASE_3_DEGREE', phaseLabel: 'CPL Flight School & Simulator',
+            title: '200 Flying Hours & DGCA CPL Licensing',
+            subtitle: 'Flight training, multi-engine aircraft, and instrument ratings',
+            durationYears: '1.5 to 2 Years',
+            description: 'Complete 200 hours flight training and clear all DGCA ground theory exams.',
+            mandatoryEligibility: ['DGCA Class 1 Medical Fitness'],
+            examGateways: [],
+            recommendedInstitutions: ['Approved Flying Clubs in India / Abroad'],
+            skillsToAcquire: ['Emergency Instrument Flying', 'Radio Telephony Communications'],
+            estimatedCostRange: '₹50L - ₹75L',
+            keyActionTip: 'Specialize in Air Ambulance / Medevac operations where medical biology background provides distinct competitive edge.'
+          },
+          {
+            id: 'pilot_bipc_4', phase: 'PHASE_5_OUTCOME', phaseLabel: 'Industry Outcomes',
+            title: 'Commercial Airline Pilot & Medevac Aviation Specialist',
+            subtitle: 'Flying high-speed jet aircraft for major airlines and emergency medical flights',
+            description: 'Fly commercial airliners or emergency aeromedical aircraft globally.',
+            mandatoryEligibility: ['DGCA CPL + Type Rating'],
+            examGateways: [],
+            recommendedInstitutions: ['Major Domestic & International Airlines'],
+            skillsToAcquire: ['Aeromedical Evacuation Protocols', 'Cockpit Leadership'],
+            estimatedCostRange: 'Zero (Earning Phase)',
+            keyActionTip: 'Advance towards ATPL license and Boeing/Airbus type certifications.'
+          }
+        ]
+      },
+      POLYTECHNIC: {
+        streamType: 'POLYTECHNIC',
+        streamName: '3-Year Diploma in Aeronautical Engineering Route',
+        streamShortDesc: 'Diploma in Aeronautical Engg -> Aircraft Systems Mastery -> CPL / AME',
+        badgeLabel: 'Aircraft Systems & Avionics Master',
+        themeColor: STREAM_THEMES.POLYTECHNIC,
+        approachPhilosophy: 'Master gas turbines, airframe structures, avionics, and flight hydraulics through a 3-year technical polytechnic diploma before logging flying hours for CPL.',
+        metrics: { timeToFirstJobYears: 4, financialInvestment: 'HIGH', competitionLevel: 'MODERATE', flexibilityScore: 9, practicalToTheoryRatio: 9 },
+        pros: ['Unmatched understanding of aircraft mechanical and jet engine systems makes DGCA Technical exams effortless', 'Dual qualification: Can work as Aircraft Maintenance Engineer (AME) while funding flight training hours'],
+        cons: ['Adds 3 years of diploma study before flight school'],
+        entryJobRoles: ['Aircraft Systems Technician / AME', 'Junior First Officer', 'Flight Test Engineer'],
+        fiveYearTrajectory: 'Senior Commercial Pilot & Airline Flight Operations Technical Specialist (₹50L - ₹1Cr+).',
+        salarySpectrumLpa: { entryMin: 8, entryMax: 24, experiencedPeak: 100 },
+        lateralSwitches: [],
+        milestones: [
+          {
+            id: 'pilot_poly_1', phase: 'PHASE_0_10TH', phaseLabel: '10th Standard',
+            title: '10th Board & POLYCET Entrance',
+            subtitle: 'Secure diploma seat in Aeronautical or Mechanical Engineering',
+            description: 'Pass 10th with high marks and clear state POLYCET.',
+            mandatoryEligibility: ['10th Pass with min 35% in Maths & Science'],
+            examGateways: ['POLYCET_DIPLOMA'],
+            recommendedInstitutions: ['State Polytechnic Institutes'],
+            skillsToAcquire: ['Basic Mechanical Principles', 'Electrical Circuits'],
+            estimatedCostRange: '₹500',
+            keyActionTip: 'Focus on government polytechnic colleges with aeronautical maintenance hangars.'
+          },
+          {
+            id: 'pilot_poly_2', phase: 'PHASE_1_STREAM', phaseLabel: '3-Year Diploma',
+            title: '3-Year Diploma in Aeronautical / Mechanical Engineering',
+            subtitle: 'Gas turbine engines, flight aerodynamics, aircraft structures, and avionics',
+            durationYears: '3 Years',
+            description: 'Disassemble aircraft engines, study hydraulic control systems, and master structural inspections.',
+            mandatoryEligibility: ['POLYCET seat allotment'],
+            examGateways: [],
+            recommendedInstitutions: ['Govt Polytechnic Colleges'],
+            skillsToAcquire: ['Jet Engine Mechanics', 'Avionics Wiring & Radar Systems', 'Airframe Structural Testing'],
+            estimatedCostRange: '₹15,000 - ₹40,000 total',
+            keyActionTip: 'Clear DGCA Aircraft Maintenance Engineering (AME) Modules 7 and 11 during your diploma.'
+          },
+          {
+            id: 'pilot_poly_3', phase: 'PHASE_3_DEGREE', phaseLabel: 'CPL Flying & DGCA Ground Clearances',
+            title: 'Commercial Pilot Flight Training (200 Flying Hours)',
+            subtitle: 'Obtain DGCA CPL with Multi-Engine Instrument Rating',
+            durationYears: '1.5 Years',
+            description: 'Complete flight training with effortless clearance of DGCA Technical General and Specific papers.',
+            mandatoryEligibility: ['DGCA Class 1 Medical'],
+            examGateways: [],
+            recommendedInstitutions: ['DGCA Approved Flying Training Institutes'],
+            skillsToAcquire: ['Cockpit Emergency Decision Making', 'Instrument Landing System (ILS) Approaches'],
+            estimatedCostRange: '₹45L - ₹65L',
+            keyActionTip: 'Your technical diploma gives you an edge in airline technical interview boards.'
+          },
+          {
+            id: 'pilot_poly_4', phase: 'PHASE_5_OUTCOME', phaseLabel: 'Industry Outcomes',
+            title: 'Commercial Airline Pilot & Flight Test Specialist',
+            subtitle: 'Commanding modern jet aircraft with deep engineering intuition',
+            description: 'Fly as First Officer with fast progression to Captain and Fleet Technical Pilot.',
+            mandatoryEligibility: ['CPL + Type Rating'],
+            examGateways: [],
+            recommendedInstitutions: ['Commercial Airlines'],
+            skillsToAcquire: ['Simulator Flight Instruction', 'Fleet Modernization Evaluation'],
+            estimatedCostRange: 'Zero (High Revenue Phase)',
+            keyActionTip: 'Technical pilot backgrounds are prioritized for Chief Pilot and Director of Flight Safety promotions.'
+          }
+        ]
+      },
+      MEC_CEC: {
+        streamType: 'MEC_CEC',
+        streamName: 'Aviation Business & Airline Operations Route (via NIOS Bridge)',
+        streamShortDesc: 'MEC + NIOS Physics/Maths -> CPL + Aviation Management',
+        badgeLabel: 'Airline Operations & Commercial Pilot',
+        themeColor: STREAM_THEMES.MEC_CEC,
+        approachPhilosophy: 'Combine airline route economics, aviation finance, and fleet leasing business with cockpit CPL flying credentials to rise rapidly into airline executive leadership.',
+        metrics: { timeToFirstJobYears: 3.5, financialInvestment: 'PREMIUM', competitionLevel: 'MODERATE', flexibilityScore: 9, practicalToTheoryRatio: 8 },
+        pros: ['Unique dual expertise in commercial aviation business and active cockpit flight operations', 'Fast track to airline fleet planning, route scheduling, and flight operations executive leadership'],
+        cons: ['Requires clearing NIOS Physics and Mathematics bridge exams'],
+        entryJobRoles: ['First Officer', 'Flight Operations Analyst', 'Charter Fleet Coordinator'],
+        fiveYearTrajectory: 'Airline Captain & Flight Operations Vice President (₹60L - ₹1.4Cr+).',
+        salarySpectrumLpa: { entryMin: 18, entryMax: 32, experiencedPeak: 130 },
+        lateralSwitches: [],
+        milestones: [
+          {
+            id: 'pilot_mec_1', phase: 'PHASE_0_10TH', phaseLabel: '10th Standard',
+            title: '10th Board with High Commercial & Aviation Interest',
+            subtitle: 'Pass 10th with interest in global business and aviation logistics',
+            description: 'Pass 10th board exams.',
+            mandatoryEligibility: ['Pass 10th Board'],
+            examGateways: [],
+            recommendedInstitutions: ['Secondary Boards'],
+            skillsToAcquire: ['Economics & Global Geography'],
+            estimatedCostRange: 'Standard',
+            keyActionTip: 'Understand the business dynamics of budget airlines vs full-service legacy carriers.'
+          },
+          {
+            id: 'pilot_mec_2', phase: 'PHASE_1_STREAM', phaseLabel: '10+2 MEC + NIOS Bridge',
+            title: '10+2 MEC with NIOS Physics & Mathematics ODE',
+            subtitle: 'Complete 10+2 Commerce while passing NIOS Physics & Maths',
+            durationYears: '2 Years',
+            description: 'Study commerce and economics while clearing NIOS on-demand exams in Physics and Mathematics for DGCA CPL eligibility.',
+            mandatoryEligibility: ['10+2 Commerce + NIOS Physics & Maths certificate with min 50%'],
+            examGateways: ['IGRUA_CPL', 'CUET_UG'],
+            recommendedInstitutions: ['Junior College + NIOS'],
+            skillsToAcquire: ['Airline Route Profitability Modeling', 'Aerodynamics & Navigation Math'],
+            estimatedCostRange: '₹40,000 + NIOS fees',
+            keyActionTip: 'Obtain DGCA Computer Number and Class 1 Medical simultaneously.'
+          },
+          {
+            id: 'pilot_mec_3', phase: 'PHASE_3_DEGREE', phaseLabel: 'BBA Aviation + CPL Flight Training',
+            title: 'BBA in Aviation Management & DGCA Commercial Pilot License',
+            subtitle: 'Dual qualification in airline management and cockpit flight hours',
+            durationYears: '3 Years',
+            description: 'Complete undergraduate degree in aviation management while logging 200 hours of commercial flight training.',
+            mandatoryEligibility: ['DGCA Class 1 Medical Fitness'],
+            examGateways: [],
+            recommendedInstitutions: ['University Aviation Departments & Approved Flying Schools'],
+            skillsToAcquire: ['Yield Management & Slot Pricing', 'Type Rating on A320/B737'],
+            estimatedCostRange: '₹50L - ₹80L',
+            keyActionTip: 'Publish case studies on airline fleet fuel hedging and low-cost carrier turnarounds.'
+          },
+          {
+            id: 'pilot_mec_4', phase: 'PHASE_5_OUTCOME', phaseLabel: 'Industry Outcomes',
+            title: 'Commercial Airline Pilot & Operations Executive',
+            subtitle: 'Commanding scheduled airliners with strategic business oversight',
+            description: 'Fly as First Officer while consulting on flight operations dispatch, fuel efficiency, and fleet expansion.',
+            mandatoryEligibility: ['CPL + Type Rating'],
+            examGateways: [],
+            recommendedInstitutions: ['Major Global Airlines & Aircraft Leasing Firms'],
+            skillsToAcquire: ['Aircraft Dry/Wet Lease Negotiations', 'Regulatory DGCA Compliance'],
+            estimatedCostRange: 'Zero (Earning Phase)',
+            keyActionTip: 'Pilots with management degrees naturally transition into Chief Operating Officer (COO) roles.'
+          }
+        ]
+      },
+      HEC: {
+        streamType: 'HEC',
+        streamName: 'Humanities to Aviation Bridge Route (via NIOS Bridge)',
+        streamShortDesc: 'HEC + NIOS Physics/Maths -> CPL Flying Training',
+        badgeLabel: 'Aviation Law & Global Flight Operations',
+        themeColor: STREAM_THEMES.HEC,
+        approachPhilosophy: 'Humanities and global geopolitics background combined with NIOS Physics/Maths certification to fly international long-haul routes with deep understanding of international aviation treaties and airspace law.',
+        metrics: { timeToFirstJobYears: 3.5, financialInvestment: 'PREMIUM', competitionLevel: 'MODERATE', flexibilityScore: 8, practicalToTheoryRatio: 8 },
+        pros: ['Allows humanities students with strong passion for flight to become commercial pilots', 'Deep mastery of International Air Law, Chicago Convention, and ICAO airspace regulations'],
+        cons: ['Requires preparing for NIOS Physics and Mathematics independently'],
+        entryJobRoles: ['First Officer', 'Aviation Regulatory Analyst', 'International Ferry Pilot'],
+        fiveYearTrajectory: 'Long-Haul International Airline Captain (₹55L - ₹1.2Cr+).',
+        salarySpectrumLpa: { entryMin: 18, entryMax: 30, experiencedPeak: 110 },
+        lateralSwitches: [],
+        milestones: [
+          {
+            id: 'pilot_hec_1', phase: 'PHASE_0_10TH', phaseLabel: '10th Standard',
+            title: '10th Board with Geography & Geopolitics Passion',
+            subtitle: 'Pass 10th standard board exams',
+            description: 'Pass 10th with interest in world geography, international relations, and flight.',
+            mandatoryEligibility: ['Pass 10th Board'],
+            examGateways: [],
+            recommendedInstitutions: ['Secondary Boards'],
+            skillsToAcquire: ['World Geography & Weather Systems'],
+            estimatedCostRange: 'Standard',
+            keyActionTip: 'Check DGCA medical vision standards.'
+          },
+          {
+            id: 'pilot_hec_2', phase: 'PHASE_1_STREAM', phaseLabel: '10+2 HEC + NIOS Bridge',
+            title: '10+2 HEC with NIOS Physics & Mathematics',
+            subtitle: 'Study arts/humanities while clearing NIOS Physics and Maths papers',
+            durationYears: '2 Years',
+            description: 'Pass 10+2 Humanities while clearing NIOS on-demand exams in Physics & Maths with > 50% for DGCA eligibility.',
+            mandatoryEligibility: ['10+2 Humanities + NIOS Physics & Maths certificate'],
+            examGateways: ['IGRUA_CPL', 'CUET_UG'],
+            recommendedInstitutions: ['Junior College + NIOS'],
+            skillsToAcquire: ['International Air Law & Treaties', 'Aviation Physics'],
+            estimatedCostRange: '₹30,000 + NIOS fees',
+            keyActionTip: 'Apply for DGCA Computer Number.'
+          },
+          {
+            id: 'pilot_hec_3', phase: 'PHASE_3_DEGREE', phaseLabel: 'CPL Flight School',
+            title: 'Commercial Pilot Training (200 Flying Hours)',
+            subtitle: 'Instrument rating, multi-engine rating, and Type Rating',
+            durationYears: '1.5 to 2 Years',
+            description: 'Complete 200 hours of commercial flight training and clear all 5 DGCA ground examinations.',
+            mandatoryEligibility: ['DGCA Class 1 Medical Fitness'],
+            examGateways: [],
+            recommendedInstitutions: ['Approved Flying Training Organisations'],
+            skillsToAcquire: ['Cross-Border International Airspace Protocols', 'Cockpit Resource Management'],
+            estimatedCostRange: '₹50L - ₹75L',
+            keyActionTip: 'Study International Civil Aviation Organization (ICAO) annexes thoroughly.'
+          },
+          {
+            id: 'pilot_hec_4', phase: 'PHASE_5_OUTCOME', phaseLabel: 'Industry Outcomes',
+            title: 'International Commercial Airline First Officer',
+            subtitle: 'Flying widebody international long-haul passenger routes',
+            description: 'Operate international flights across diverse airspace corridors.',
+            mandatoryEligibility: ['CPL + Type Rating'],
+            examGateways: [],
+            recommendedInstitutions: ['Major International Airlines'],
+            skillsToAcquire: ['Trans-Oceanic Navigation', 'International Overflight Permissions'],
+            estimatedCostRange: 'Zero (Earning Phase)',
+            keyActionTip: 'Pursue widebody endorsements (Boeing 777 / 787 or Airbus A350).'
+          }
+        ]
+      },
+      VOCATIONAL_GUILD: {
+        streamType: 'VOCATIONAL_GUILD',
+        streamName: 'Armed Forces / Defense Aviation Conversion Route',
+        streamShortDesc: '10+2 -> NDA Air Force / Army Aviation Pilot -> Commercial CPL Conversion',
+        badgeLabel: 'Military Aviator to Commercial Captain',
+        themeColor: STREAM_THEMES.VOCATIONAL_GUILD,
+        approachPhilosophy: 'Serve as a fighter, transport, or helicopter pilot in the Indian Air Force / Navy / Army Aviation through NDA / CDS / AFCAT (100% government funded), followed by DGCA military-to-civilian CPL conversion.',
+        metrics: { timeToFirstJobYears: 5, financialInvestment: 'FREE_SCHOLARSHIP', competitionLevel: 'EXTREME', flexibilityScore: 8, practicalToTheoryRatio: 10 },
+        pros: ['100% free pilot training funded by the Government of India with world-class military tactical training', 'Earn high military officer pay and pension during service before high-paying commercial airline conversion', 'Military pilots are prioritized by airlines worldwide for extreme cockpit composure'],
+        cons: ['NDA entrance exam and 5-Day SSB Interview have an acceptance rate < 0.1%', 'Requires 10 to 14 years of mandatory military Short Service / Permanent Commission commitment'],
+        entryJobRoles: ['Commissioned Military Pilot (Flying Officer)', 'Commercial First Officer', 'VIP Transport Captain'],
+        fiveYearTrajectory: 'Squadron Leader / Commercial Widebody Captain (₹30L - ₹1.5Cr+).',
+        salarySpectrumLpa: { entryMin: 15, entryMax: 28, experiencedPeak: 150 },
+        lateralSwitches: [],
+        milestones: [
+          {
+            id: 'pilot_def_1', phase: 'PHASE_0_10TH', phaseLabel: '10th Standard',
+            title: '10th Board with Physical Endurance',
+            subtitle: 'Sports, running, leadership, and NCC Air Wing cadet training',
+            description: 'Pass 10th standard while excelling in sports, cross-country running, and NCC training.',
+            mandatoryEligibility: ['Pass 10th Board', 'Peak physical fitness'],
+            examGateways: [],
+            recommendedInstitutions: ['Sainik Schools / Military Schools / Regular Boards'],
+            skillsToAcquire: ['Officer Like Qualities (OLQ)', 'Physical Fitness (5km running, pushups, pullups)'],
+            estimatedCostRange: 'Nominal',
+            keyActionTip: 'Join the NCC Air Wing to get early microlight glider flying exposure.'
+          },
+          {
+            id: 'pilot_def_2', phase: 'PHASE_1_STREAM', phaseLabel: '10+2 with NDA Exam Prep',
+            title: '10+2 MPC with UPSC NDA & NA Examination Prep',
+            subtitle: 'Mathematics, Physics, English, and General Ability',
+            durationYears: '2 Years',
+            description: 'Prepare intensively for the UPSC NDA written examination and 5-day SSB interview for the Air Force Flying Branch.',
+            mandatoryEligibility: ['10+2 with Physics and Mathematics, Age: 16.5 - 19.5 years, Unmarried'],
+            examGateways: ['NDA_EXAM'],
+            recommendedInstitutions: ['Junior Colleges & NDA Academies'],
+            skillsToAcquire: ['SSB Psychological Battery (TAT, WAT, SRT)', 'Computerised Pilot Selection System (CPSS) Test'],
+            estimatedCostRange: '₹30,000 - ₹80,000',
+            keyActionTip: 'Clear the CPSS (Computerised Pilot Selection System)—the once-in-a-lifetime test for Indian military pilot entry.'
+          },
+          {
+            id: 'pilot_def_3', phase: 'PHASE_3_DEGREE', phaseLabel: 'NDA Khadakwasla & AFA Dundigal',
+            title: '3-Year NDA B.Sc/B.Tech + 1.5-Year Air Force Academy Pilot Wings',
+            subtitle: '100% Government Funded Military Flight Training on Pilatus PC-7 and Hawk 132 Jets',
+            durationYears: '4.5 Years',
+            description: 'Graduate from NDA Khadakwasla and earn pilot wings at Air Force Academy (AFA Dundigal), being commissioned as a Flying Officer in the Indian Air Force.',
+            mandatoryEligibility: ['Selection in NDA Flying Merit List'],
+            examGateways: [],
+            recommendedInstitutions: ['National Defence Academy (Pune)', 'Air Force Academy (Hyderabad)'],
+            skillsToAcquire: ['High-G Aerobatics', 'Tactical Formation Flying', 'Night Combat Operations'],
+            estimatedCostRange: 'Fully Funded by Govt (Cadet Stipend + Uniforms + Flying)',
+            keyActionTip: 'Earn the President’s Plaque for Best in Flying at graduation.'
+          },
+          {
+            id: 'pilot_def_4', phase: 'PHASE_5_OUTCOME', phaseLabel: 'Industry Outcomes',
+            title: 'Elite Military Aviator & Commercial Airline Captain',
+            subtitle: 'Commanding fighter jets / transport fleets and transitioning to commercial airlines',
+            description: 'Clock 1,500+ military jet hours, execute humanitarian and defense missions, and convert to senior commercial airline captaincy upon release.',
+            mandatoryEligibility: ['Military Flying Logbook + DGCA Composite Conversion'],
+            examGateways: [],
+            recommendedInstitutions: ['Indian Air Force -> Air India, IndiGo, Emirates, Singapore Airlines'],
+            skillsToAcquire: ['Widebody Long-Haul Fleet Command', 'Crew Resource Management Master'],
+            estimatedCostRange: 'Zero (High Military Pay & Retiring Gratuity)',
+            keyActionTip: 'Military transport pilots transition directly to Boeing 777 and Airbus A350 Captaincy.'
+          }
+        ]
+      }
+    }
+  }
+};

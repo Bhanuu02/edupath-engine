@@ -11,6 +11,11 @@ interface PathwayState {
   selectedDomain: DomainId | 'all';
   activeExam: ExamGateway | null;
   
+  // Navigation Views
+  currentView: 'home' | 'pathway';
+  navigateToHome: () => void;
+  navigateToPathway: (role?: CareerRole) => void;
+
   // Modals & Drawers
   isExamModalOpen: boolean;
   isStreamQuizOpen: boolean;
@@ -53,6 +58,7 @@ export const usePathwayStore = create<PathwayState>()(
       searchQuery: '',
       selectedDomain: 'all',
       activeExam: null,
+      currentView: 'home',
 
       isExamModalOpen: false,
       isStreamQuizOpen: false,
@@ -65,12 +71,27 @@ export const usePathwayStore = create<PathwayState>()(
       geminiApiKey: '',
       themeMode: 'dark',
 
-      setActiveRole: (role) => set({ activeRole: role }),
+      navigateToHome: () => {
+        set({ currentView: 'home' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+
+      navigateToPathway: (role) => {
+        if (role) {
+          set({ activeRole: role, currentView: 'pathway' });
+        } else {
+          set({ currentView: 'pathway' });
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+
+      setActiveRole: (role) => set({ activeRole: role, currentView: 'pathway' }),
       
       setActiveRoleById: (id) => {
         const found = CURATED_CAREER_PATHWAYS[id];
         if (found) {
-          set({ activeRole: found });
+          set({ activeRole: found, currentView: 'pathway' });
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       },
 

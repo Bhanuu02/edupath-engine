@@ -1,6 +1,7 @@
 import { CareerRole, StreamType } from '../types/pathway';
 import { CareerRoleSchema } from './pathwaySchema';
 import { CURATED_CAREER_PATHWAYS } from '../data/curatedPathways';
+import { extractCareerIntent } from './intentExtractor';
 
 // Helper theme color presets
 const STREAM_THEMES = {
@@ -17,19 +18,36 @@ const STREAM_THEMES = {
  * using Google Gemini REST API or intelligent synthetic heuristics.
  */
 export async function generateDynamicCareerPathway(query: string, apiKey?: string): Promise<CareerRole> {
-  const normalizedQuery = query.trim().toLowerCase();
+  const intent = extractCareerIntent(query);
 
-  // 1. Check exact or close match in curated database first
+  // 1a. If intent matches a direct curated role ID, return it immediately
+  if (intent.extractedRoleKey && CURATED_CAREER_PATHWAYS[intent.extractedRoleKey]) {
+    return CURATED_CAREER_PATHWAYS[intent.extractedRoleKey];
+  }
+
+  const normalizedQuery = query.trim().toLowerCase();
+  const normalizedKeyword = intent.cleanedKeyword.toLowerCase();
+
+  // 1b. Check exact or close match in curated database with both raw query and extracted keyword
   const existingKey = Object.keys(CURATED_CAREER_PATHWAYS).find(key => {
     const role = CURATED_CAREER_PATHWAYS[key];
-    return role.title.toLowerCase().includes(normalizedQuery) ||
-           role.slug.toLowerCase().includes(normalizedQuery) ||
-           role.tags.some(t => t.toLowerCase().includes(normalizedQuery));
+    const roleTitle = role.title.toLowerCase();
+    const roleSlug = role.slug.toLowerCase();
+    const tags = role.tags.map(t => t.toLowerCase());
+
+    return roleTitle.includes(normalizedKeyword) ||
+           roleSlug.includes(normalizedKeyword) ||
+           tags.some(t => t.includes(normalizedKeyword)) ||
+           roleTitle.includes(normalizedQuery) ||
+           roleSlug.includes(normalizedQuery) ||
+           tags.some(t => t.includes(normalizedQuery));
   });
 
   if (existingKey) {
     return CURATED_CAREER_PATHWAYS[existingKey];
   }
+
+  const targetCleanQuery = intent.cleanedKeyword || query;
 
   // 2. If Gemini API Key is provided, invoke official Gemini REST endpoint directly (zero dependency)
   if (apiKey && apiKey.length > 10) {
@@ -86,7 +104,7 @@ Output pure JSON matching the CareerRole schema without markdown ticks.`;
   }
 
   // 3. Robust Dynamic Local Synthesis Fallback
-  return createSynthesizedPathway(query);
+  return createSynthesizedPathway(targetCleanQuery);
 }
 
 /**

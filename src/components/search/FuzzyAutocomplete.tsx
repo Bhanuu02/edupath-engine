@@ -1,10 +1,12 @@
 import React from 'react';
 import { SearchCandidate } from '../../hooks/useCareerSearch';
-import { Sparkles, ArrowRight, BookOpen, CheckCircle } from 'lucide-react';
+import { Sparkles, ArrowRight, BookOpen, CheckCircle, Target, Zap } from 'lucide-react';
+import { ExtractedIntent } from '../../lib/intentExtractor';
 
 interface FuzzyAutocompleteProps {
   candidates: SearchCandidate[];
   query: string;
+  intent?: ExtractedIntent;
   onSelect: (candidate: SearchCandidate) => void;
   onCustomGenerate: (query: string) => void;
   isOpen: boolean;
@@ -13,6 +15,7 @@ interface FuzzyAutocompleteProps {
 export const FuzzyAutocomplete: React.FC<FuzzyAutocompleteProps> = ({
   candidates,
   query,
+  intent,
   onSelect,
   onCustomGenerate,
   isOpen
@@ -22,6 +25,21 @@ export const FuzzyAutocomplete: React.FC<FuzzyAutocompleteProps> = ({
   return (
     <div className="absolute top-full left-0 right-0 mt-2 z-50 glass-panel rounded-2xl shadow-2xl overflow-hidden border border-slate-700/80 animate-in fade-in slide-in-from-top-2 duration-150">
       
+      {/* NLP Intent Extraction Banner */}
+      {intent && intent.isConversational && intent.cleanedKeyword && (
+        <div className="px-4 py-2 bg-gradient-to-r from-indigo-950/90 to-purple-950/90 border-b border-indigo-500/30 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2 text-indigo-300">
+            <Target className="w-4 h-4 text-emerald-400 animate-pulse shrink-0" />
+            <span>
+              Target Goal Identified: <strong className="text-white uppercase tracking-wider underline decoration-indigo-400 font-bold">{intent.cleanedKeyword}</strong>
+            </span>
+          </div>
+          <span className="text-[10px] text-emerald-400 font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+            Smart Matched
+          </span>
+        </div>
+      )}
+
       {/* Suggestions List */}
       <div className="max-h-80 overflow-y-auto divide-y divide-slate-800/60 p-2">
         {candidates.length > 0 ? (

@@ -16,13 +16,13 @@ const POPULAR_TAGS = [
 ];
 
 export const HeroSearch: React.FC = () => {
-  const { searchQuery, setSearchQuery, selectedDomain, isCustomRoleLoading } = usePathwayStore();
+  const { searchQuery, setSearchQuery, selectedDomain, isCustomRoleLoading, navigateToPathway } = usePathwayStore();
   const { searchRoles, selectOrGenerateRole } = useCareerSearch();
   
   const [isOpen, setIsOpen] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
-  const matchedCandidates = searchRoles(searchQuery, selectedDomain);
+  const { candidates: matchedCandidates, intent } = searchRoles(searchQuery, selectedDomain);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -39,21 +39,33 @@ export const HeroSearch: React.FC = () => {
     setIsOpen(false);
     setSearchQuery(candidate.title);
     await selectOrGenerateRole(candidate);
+    navigateToPathway();
   };
 
   const handleCustomGenerate = async (customQuery: string) => {
     setIsOpen(false);
     await selectOrGenerateRole(customQuery);
+    navigateToPathway();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
     setIsOpen(false);
+
+    // If NLP intent extracted a specific curated role key
+    if (intent.extractedRoleKey) {
+      const direct = matchedCandidates.find(c => c.id === intent.extractedRoleKey);
+      if (direct) {
+        await handleSelectCandidate(direct);
+        return;
+      }
+    }
+
     if (matchedCandidates.length > 0) {
       await handleSelectCandidate(matchedCandidates[0]);
     } else {
-      await handleCustomGenerate(searchQuery);
+      await handleCustomGenerate(intent.cleanedKeyword || searchQuery);
     }
   };
 
@@ -138,6 +150,7 @@ export const HeroSearch: React.FC = () => {
           <FuzzyAutocomplete
             candidates={matchedCandidates}
             query={searchQuery}
+            intent={intent}
             onSelect={handleSelectCandidate}
             onCustomGenerate={handleCustomGenerate}
             isOpen={isOpen}
@@ -155,6 +168,7 @@ export const HeroSearch: React.FC = () => {
               onClick={async () => {
                 setSearchQuery(tag);
                 await selectOrGenerateRole(tag);
+                navigateToPathway();
               }}
               className="text-xs px-2.5 py-1 rounded-full bg-slate-900/80 hover:bg-indigo-600/20 hover:text-indigo-300 text-slate-300 border border-slate-800 hover:border-indigo-500/30 transition-all cursor-pointer"
             >

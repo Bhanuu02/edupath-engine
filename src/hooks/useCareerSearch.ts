@@ -5,6 +5,7 @@ import { CURATED_CAREER_PATHWAYS } from '../data/curatedPathways';
 import { UNIVERSAL_DOMAINS } from '../data/universalDomains';
 import { generateDynamicCareerPathway } from '../lib/aiEngine';
 import { usePathwayStore } from '../store/pathwayStore';
+import { extractCareerIntent, ExtractedIntent } from '../lib/intentExtractor';
 
 export interface SearchCandidate {
   id: string;
@@ -65,30 +66,79 @@ export function useCareerSearch() {
         { name: 'tags', weight: 0.3 },
         { name: 'domainName', weight: 0.1 }
       ],
-      threshold: 0.35,
+      threshold: 0.4,
       includeScore: true,
       minMatchCharLength: 2
     });
   }, [searchIndex]);
 
-  // 3. Search query executor
-  const searchRoles = (query: string, domainFilter?: string): SearchCandidate[] => {
+  // 3. Search query executor with Intent & Keyword Extraction
+  const searchRoles = (query: string, domainFilter?: string): { candidates: SearchCandidate[]; intent: ExtractedIntent } => {
     const cleanQuery = query.trim();
+    const intent = extractCareerIntent(cleanQuery);
+
     if (!cleanQuery) {
+      let defaultList = searchIndex;
       if (domainFilter && domainFilter !== 'all') {
-        return searchIndex.filter(c => c.domainId === domainFilter);
+        defaultList = searchIndex.filter(c => c.domainId === domainFilter);
       }
-      return searchIndex.slice(0, 12);
+      return {
+        candidates: defaultList.slice(0, 12),
+        intent
+      };
     }
 
-    const results = fuse.search(cleanQuery);
-    let matched = results.map(r => r.item);
+    const matchedMap = new Map<string, SearchCandidate>();
+
+    // 3a. If high-confidence role key was extracted directly from synonyms
+    if (intent.extractedRoleKey) {
+      const directMatch = searchIndex.find(c => c.id === intent.extractedRoleKey);
+      if (directMatch) {
+        matchedMap.set(directMatch.id, directMatch);
+      }
+    }
+
+    // 3b. Search using extracted clean keyword (e.g. "lawyer" instead of "i wanna become lawyer")
+    const searchTarget = intent.cleanedKeyword || cleanQuery;
+    const fuseResults = fuse.search(searchTarget);
+    fuseResults.forEach(r => {
+      if (!matchedMap.has(r.item.id)) {
+        matchedMap.set(r.item.id, r.item);
+      }
+    });
+
+    // 3c. If searching with cleaned keyword had fewer results, try raw query as fallback
+    if (searchTarget !== cleanQuery && matchedMap.size < 3) {
+      const rawResults = fuse.search(cleanQuery);
+      rawResults.forEach(r => {
+        if (!matchedMap.has(r.item.id)) {
+          matchedMap.set(r.item.id, r.item);
+        }
+      });
+    }
+
+    // 3d. Check direct token containment in titles & tags
+    const lowerKeyword = searchTarget.toLowerCase();
+    searchIndex.forEach(c => {
+      if (!matchedMap.has(c.id)) {
+        const titleMatch = c.title.toLowerCase().includes(lowerKeyword);
+        const tagMatch = c.tags.some(t => t.toLowerCase().includes(lowerKeyword));
+        if (titleMatch || tagMatch) {
+          matchedMap.set(c.id, c);
+        }
+      }
+    });
+
+    let resultList = Array.from(matchedMap.values());
 
     if (domainFilter && domainFilter !== 'all') {
-      matched = matched.filter(c => c.domainId === domainFilter);
+      resultList = resultList.filter(c => c.domainId === domainFilter);
     }
 
-    return matched;
+    return {
+      candidates: resultList,
+      intent
+    };
   };
 
   // 4. Select or dynamically synthesize a career role
@@ -97,7 +147,13 @@ export function useCareerSearch() {
     setCustomRoleLoading(true);
 
     try {
-      const queryStr = typeof candidateOrQuery === 'string' ? candidateOrQuery : candidateOrQuery.title;
+      let queryStr: string;
+      if (typeof candidateOrQuery === 'string') {
+        queryStr = candidateOrQuery;
+      } else {
+        queryStr = candidateOrQuery.title;
+      }
+
       const role = await generateDynamicCareerPathway(queryStr, geminiApiKey);
       setActiveRole(role);
       return role;

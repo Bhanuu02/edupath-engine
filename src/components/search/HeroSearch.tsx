@@ -33,7 +33,7 @@ export const HeroSearch: React.FC = () => {
   const [targetSearchTitle, setTargetSearchTitle] = useState('');
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
-  const matchedCandidates = searchRoles(searchQuery, selectedDomain);
+  const { candidates: matchedCandidates, intent } = searchRoles(searchQuery, selectedDomain);
 
   // Close dropdown on outside click
   useEffect(() => {

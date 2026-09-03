@@ -34,7 +34,7 @@ export const PathwayDetailView: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
-  const matchedCandidates = searchRoles(searchQuery);
+  const { candidates: matchedCandidates, intent } = searchRoles(searchQuery);
 
   // Close search dropdown on click outside
   useEffect(() => {

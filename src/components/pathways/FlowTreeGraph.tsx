@@ -33,7 +33,36 @@ export const FlowTreeGraph: React.FC = () => {
   const [spatialRotation, setSpatialRotation] = useState({ x: 10, y: -4 });
 
   const isBookmarked = bookmarkedRoleIds.includes(activeRole.id);
-  const streamData = activeRole.streams[selectedStream] || activeRole.streams['MPC'] || Object.values(activeRole.streams)[0];
+  const fallbackStream = {
+    streamType: 'MPC' as StreamType,
+    streamName: 'Standard Stream Pathway',
+    streamShortDesc: 'Academic Foundation',
+    badgeLabel: 'Foundation Track',
+    themeColor: {
+      primary: '#ea580c',
+      border: 'border-orange-500/30',
+      bg: 'bg-orange-500/10',
+      text: 'text-orange-700',
+      glow: 'shadow-orange-500/20'
+    },
+    approachPhilosophy: 'Standard university degree pathway leading to professional qualification.',
+    milestones: [],
+    lateralSwitches: [],
+    metrics: {
+      timeToFirstJobYears: 4,
+      financialInvestment: 'MODERATE' as const,
+      competitionLevel: 'HIGH' as const,
+      flexibilityScore: 8,
+      practicalToTheoryRatio: 7
+    },
+    pros: ['Solid academic foundation'],
+    cons: ['Standard competition'],
+    entryJobRoles: ['Graduate Trainee', 'Associate'],
+    fiveYearTrajectory: 'Senior Specialist / Team Lead',
+    salarySpectrumLpa: { entryMin: 4, entryMax: 8, experiencedPeak: 25 }
+  };
+
+  const streamData = (activeRole.streams && (activeRole.streams[selectedStream] || activeRole.streams['MPC'] || Object.values(activeRole.streams)[0])) || fallbackStream;
 
   return (
     <div id="roadmap-flow-container" className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">

@@ -107,5 +107,5 @@ export const CareerRoleSchema = z.object({
   iconName: z.string(),
   tags: z.array(z.string()),
   marketDemand: z.enum(['STEADY', 'HIGH', 'EXPLOSIVE']),
-  streams: z.record(StreamTypeSchema, StreamPathwaySchema)
+  streams: z.record(z.string(), StreamPathwaySchema)
 });

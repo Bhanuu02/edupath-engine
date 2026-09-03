@@ -127,7 +127,7 @@ export interface CareerRole {
   iconName: string;
   tags: string[];
   marketDemand: 'STEADY' | 'HIGH' | 'EXPLOSIVE';
-  streams: Record<StreamType, StreamPathway>;
+  streams: Partial<Record<StreamType, StreamPathway>> & Record<string, any>;
 }
 
 export interface CareerDomain {

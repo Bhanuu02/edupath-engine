@@ -48,9 +48,10 @@ export async function generateDynamicCareerPathway(query: string, apiKey?: strin
   }
 
   const targetCleanQuery = intent.cleanedKeyword || query;
+  const activeKey = apiKey || (import.meta as any).env?.VITE_GEMINI_API_KEY || '';
 
   // 2. If Gemini API Key is provided, invoke official Gemini REST endpoint directly (zero dependency)
-  if (apiKey && apiKey.length > 10) {
+  if (activeKey && activeKey.length > 10) {
     try {
       const prompt = `You are the lead academic architect for the Indian National Multi-Stream Career Engine.
 Analyze the user's passion/dream role: "${query}".

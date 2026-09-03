@@ -9,7 +9,8 @@ import {
   Loader2, 
   Key, 
   HelpCircle,
-  Lightbulb
+  Lightbulb,
+  CheckCircle2
 } from 'lucide-react';
 
 interface ChatMessage {
@@ -22,7 +23,7 @@ const SAMPLE_PROMPTS = [
   'What if I do not qualify for the primary entrance exam?',
   'Can I switch into this career after a non-science degree?',
   'What are the most affordable government colleges for this path?',
-  'How do I build a portfolio while preparing for 12th board exams?'
+  'What physical fitness tests or skills are needed before applying?'
 ];
 
 export const CareerCopilotModal: React.FC = () => {
@@ -31,16 +32,18 @@ export const CareerCopilotModal: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       sender: 'assistant',
-      text: `Hello! I am your AI Career Copilot for **${activeRole.title}** on the **${selectedStream} Stream Pathway**. Ask me anything about entrance cutoffs, backup plans, physical fitness tests, lateral switches, or syllabus preparation strategies!`,
+      text: `Hello! I am your AI Career Copilot for **${activeRole.title}** on the **${selectedStream} Stream Pathway**.\n\nAsk me anything about entrance exam cutoffs, study strategies, physical fitness tests, lateral career switches, or fee structures!`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showKeyInput, setShowKeyInput] = useState(false);
-  const [tempApiKey, setTempApiKey] = useState(geminiApiKey);
+  const [tempApiKey, setTempApiKey] = useState(geminiApiKey || (import.meta as any).env?.VITE_GEMINI_API_KEY || '');
 
   if (!isCopilotOpen) return null;
+
+  const currentKey = geminiApiKey || (import.meta as any).env?.VITE_GEMINI_API_KEY || '';
 
   const handleSendMessage = async (customText?: string) => {
     const textToSend = customText || inputText;
@@ -59,42 +62,110 @@ export const CareerCopilotModal: React.FC = () => {
     try {
       let botReply = '';
 
-      if (geminiApiKey) {
-        const prompt = `You are an expert Indian Career Counselor and Academic Strategist.
-Target Career Role: ${activeRole.title} (${activeRole.domainName})
-Active Stream: ${selectedStream}
-User Question: "${textToSend}"
+      // Build conversation context
+      const chatHistory = messages
+        .slice(-4)
+        .map(m => `${m.sender === 'user' ? 'User' : 'Advisor'}: ${m.text}`)
+        .join('\n');
 
-Provide a concise, practical, and empathetic answer (max 3-4 bullet points or short paragraphs). Mention specific Indian exam gateways, realistic cutoffs, lateral bridges, and actionable tips.`;
+      const stream = (activeRole.streams && (activeRole.streams[selectedStream] || activeRole.streams['MPC'] || Object.values(activeRole.streams)[0])) || {
+        streamName: selectedStream,
+        approachPhilosophy: 'Academic degree pathway',
+        pros: ['Solid foundation'],
+        milestones: [],
+        lateralSwitches: [],
+        salarySpectrumLpa: { entryMin: 4, entryMax: 10, experiencedPeak: 30 },
+        metrics: { timeToFirstJobYears: 4 }
+      };
 
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { temperature: 0.7, maxOutputTokens: 600 }
-            })
+      const systemPrompt = `You are the Lead Academic Architect & Career Counselor for the Indian National Career Engine.
+Target Career Role: ${activeRole.title}
+Domain: ${activeRole.domainName}
+Active Stream: ${selectedStream} (${stream.streamName})
+Degree/Branch Recommended: ${activeRole.recommendedDegreeBranch || 'Specialized Degree'}
+Estimated Time to Job: ${stream.metrics?.timeToFirstJobYears || 4} Years
+Salary Range: ₹${stream.salarySpectrumLpa?.entryMin || 4}L - ₹${stream.salarySpectrumLpa?.entryMax || 10}L LPA
+
+Conversation History:
+${chatHistory}
+User: ${textToSend}
+
+Instructions:
+Provide a clear, empowering, and realistic answer in concise bullet points with Indian context (specific exams like JEE/NDA/NEET/CUET/GATE/UPSC, realistic cutoffs, physical fitness standards if applicable, top government/private institutions, backup lateral options, and immediate next steps).`;
+
+      // 1. Try Gemini 2.0 Flash REST API
+      if (currentKey) {
+        try {
+          const res = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${currentKey}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: systemPrompt }] }],
+                generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
+              })
+            }
+          );
+
+          if (res.ok) {
+            const data = await res.json();
+            botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          } else {
+            // Try Gemini 1.5 Flash fallback
+            const res15 = await fetch(
+              `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${currentKey}`,
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  contents: [{ parts: [{ text: systemPrompt }] }],
+                  generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
+                })
+              }
+            );
+            if (res15.ok) {
+              const data15 = await res15.json();
+              botReply = data15.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            }
           }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        } catch (apiErr) {
+          console.warn('Gemini API call encountered an issue, generating smart local guidance:', apiErr);
         }
       }
 
+      // 2. Intelligent Synthetic Fallback if API is unavailable
       if (!botReply) {
-        const stream = activeRole.streams[selectedStream] || Object.values(activeRole.streams)[0];
         const lower = textToSend.toLowerCase();
 
-        if (lower.includes('exam') || lower.includes('cutoff') || lower.includes('prepare')) {
-          botReply = `For **${activeRole.title}** in **${selectedStream}**, the primary gateway exams include ${stream.milestones[1]?.examGateways?.join(', ') || 'National / State level entrance tests'}. \n\n• **Strategy**: Focus on solving past 5-year question banks and maintaining minimum 60% board aggregate.\n• **Backup Plan**: If competitive rank is missed, consider lateral admission via ${selectedStream === 'MPC' ? 'Polytechnic Diploma (POLYCET -> ECET)' : 'State University CUET / Merit seats'}.`;
-        } else if (lower.includes('switch') || lower.includes('non-science') || lower.includes('lateral')) {
-          botReply = `Yes! NEP 2020 and modern industry allow lateral flexibility:\n\n• **Bridge Gateways**: ${stream.lateralSwitches?.map(s => s.title).join(', ') || 'Open university bridges and portfolio certifications'}.\n• **Key Advice**: Practical portfolio and domain certifications outweigh non-traditional degree backgrounds.`;
+        if (lower.includes('exam') || lower.includes('cutoff') || lower.includes('prepare') || lower.includes('syllabus')) {
+          botReply = `### Entrance Strategy for **${activeRole.title}** (${selectedStream}):\n\n` +
+            `• **Primary Gateways**: ${stream.milestones[1]?.examGateways?.join(', ') || 'National / State Level Entrance Tests'}\n` +
+            `• **Recommended Preparation Timeline**: Begin in Class 11 with 15-20 hours of weekly subject problem-solving and previous 5-year question papers.\n` +
+            `• **Cutoff Benchmark**: Aim for top 10-15 percentile for premier government institutions; maintain minimum 60% board aggregate for eligibility.\n` +
+            `• **Safety Net**: If entrance ranks vary, explore lateral entry or state university CUET counseling.`;
+        } else if (lower.includes('switch') || lower.includes('non-science') || lower.includes('lateral') || lower.includes('arts')) {
+          botReply = `### Lateral Flexibility & NEP 2020 Transition:\n\n` +
+            `• **Can you switch?**: Yes! Under the National Education Policy, multi-disciplinary transitions are recognized.\n` +
+            `• **Lateral Bridges**: ${stream.lateralSwitches?.map(s => `**${s.title}** (${s.bridgeExamOrMechanism})`).join('; ') || 'Post-graduate diplomas, open university certifications, and portfolio evaluation'}.\n` +
+            `• **Industry Reality**: Modern employers and studios prioritize demonstrable portfolio projects, GitHub code, and internships over 12th stream choice.`;
+        } else if (lower.includes('fitness') || lower.includes('physical') || lower.includes('soldier') || lower.includes('run')) {
+          botReply = `### Physical Standards & Fitness Preparation:\n\n` +
+            `• **Endurance Running**: Target 1.6 km in under 5 minutes 30 seconds for Group-1 maximum marks (60/60).\n` +
+            `• **Bodyweight Strength**: 10 unassisted chin-ups/pull-ups (40 marks), 9-foot ditch jump, and balance beam.\n` +
+            `• **Medical Checks**: Ensure eyesight 6/6 (with/without correction as per trade), zero knock-knees, flat-foot, or ear wax.\n` +
+            `• **Routine**: Practice interval sprints 3 days/week and core bodyweight strength (pushups, planks, pull-ups).`;
+        } else if (lower.includes('college') || lower.includes('fee') || lower.includes('affordable')) {
+          botReply = `### Top Institutions & Cost Breakdown for **${activeRole.title}**:\n\n` +
+            `• **Premier Government Options**: ${stream.milestones[2]?.recommendedInstitutions?.join(', ') || 'Central & State Government Universities'}\n` +
+            `• **Estimated Investment**: ${stream.milestones[2]?.estimatedCostRange || 'Nominal Subsidized Fees'}\n` +
+            `• **Scholarship Support**: Central Sector Scholarships, state fee reimbursement, and defense/merit waivers.`;
         } else {
-          botReply = `Great question regarding **${activeRole.title}**! \n\n• **Duration & Trajectory**: Estimated ${stream.metrics.timeToFirstJobYears} years to first job.\n• **Expected Entry Salary**: ₹${stream.salarySpectrumLpa.entryMin}L - ₹${stream.salarySpectrumLpa.entryMax}L LPA with senior trajectory to ₹${stream.salarySpectrumLpa.experiencedPeak}L+.\n• **Recommended Focus**: ${stream.pros[0]}.`;
+          botReply = `### Strategic Guidance for **${activeRole.title}**:\n\n` +
+            `• **Pathway Duration**: ~${stream.metrics.timeToFirstJobYears} years to first professional deployment.\n` +
+            `• **Salary Trajectory**: Entry starts at ₹${stream.salarySpectrumLpa.entryMin}L - ₹${stream.salarySpectrumLpa.entryMax}L LPA, advancing to ₹${stream.salarySpectrumLpa.experiencedPeak}L+ with senior mastery.\n` +
+            `• **Core Milestone Focus**: ${stream.pros[0] || 'Focus on foundational coursework and practical hands-on projects.'}\n` +
+            `• **Next Action**: Review the milestone timeline below and register for upcoming entrance exam notification alerts.`;
         }
       }
 
@@ -111,7 +182,7 @@ Provide a concise, practical, and empathetic answer (max 3-4 bullet points or sh
         ...prev,
         {
           sender: 'assistant',
-          text: 'Thank you for your question. As you prepare, prioritize mastering core milestone subjects and exploring lateral bridges if competitive cutoffs vary.',
+          text: 'Thank you for your question. You can explore the interactive milestones and lateral switches in the main roadmap view for step-by-step guidance.',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
@@ -126,7 +197,7 @@ Provide a concise, practical, and empathetic answer (max 3-4 bullet points or sh
       <div className="relative w-full max-w-2xl h-[85vh] flex flex-col bg-white rounded-3xl border border-orange-200 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150">
         
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-orange-100 flex items-center justify-between bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 text-white">
+        <div className="p-4 sm:p-5 border-b border-orange-100 flex items-center justify-between bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 text-white shadow-sm">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-white/20 text-white border border-white/30">
               <Sparkles className="w-5 h-5" />
@@ -136,7 +207,7 @@ Provide a concise, practical, and empathetic answer (max 3-4 bullet points or sh
                 AI Career Copilot
               </h3>
               <p className="text-xs text-orange-100">
-                Live strategic counselor for {activeRole.title} ({selectedStream})
+                Live strategic advisor for {activeRole.title} ({selectedStream})
               </p>
             </div>
           </div>
@@ -144,10 +215,11 @@ Provide a concise, practical, and empathetic answer (max 3-4 bullet points or sh
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowKeyInput(!showKeyInput)}
-              className="p-1.5 rounded-xl text-orange-100 hover:text-white bg-white/15 hover:bg-white/25 transition-colors cursor-pointer"
-              title="Add Gemini API Key for dynamic real-time AI"
+              className="px-2.5 py-1.5 rounded-xl text-xs text-orange-100 hover:text-white bg-white/15 hover:bg-white/25 transition-colors cursor-pointer flex items-center gap-1.5"
+              title="Configure API Key"
             >
-              <Key className="w-4 h-4" />
+              <Key className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">API Key</span>
             </button>
 
             <button
@@ -163,10 +235,10 @@ Provide a concise, practical, and empathetic answer (max 3-4 bullet points or sh
         {showKeyInput && (
           <div className="p-3 bg-orange-50 border-b border-orange-200 flex items-center gap-2 text-xs">
             <input
-              type="password"
+              type="text"
               value={tempApiKey}
               onChange={(e) => setTempApiKey(e.target.value)}
-              placeholder="Paste Google Gemini API Key (Optional)"
+              placeholder="Paste Google Gemini API Key"
               className="flex-1 px-3 py-1.5 rounded-lg bg-white border border-orange-300 text-slate-800 text-xs focus:outline-none focus:border-orange-500"
             />
             <button
@@ -182,35 +254,35 @@ Provide a concise, practical, and empathetic answer (max 3-4 bullet points or sh
         )}
 
         {/* Chat Message Thread */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 text-xs sm:text-sm bg-slate-50/50">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 text-xs sm:text-sm bg-stone-50/50">
           {messages.map((msg, idx) => (
             <div
               key={idx}
               className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {msg.sender === 'assistant' && (
-                <div className="w-7 h-7 rounded-xl bg-orange-100 text-orange-600 border border-orange-200 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-8 h-8 rounded-xl bg-orange-100 text-orange-600 border border-orange-200 flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                   <Bot className="w-4 h-4" />
                 </div>
               )}
 
               <div
-                className={`max-w-[85%] p-3.5 rounded-2xl leading-relaxed ${
+                className={`max-w-[85%] p-4 rounded-2xl leading-relaxed ${
                   msg.sender === 'user'
-                    ? 'bg-orange-500 text-white rounded-br-none shadow-md shadow-orange-500/20'
+                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-br-none shadow-md shadow-orange-500/20'
                     : 'bg-white text-slate-800 border border-orange-200/80 shadow-sm rounded-bl-none'
                 }`}
               >
-                <div className="whitespace-pre-line text-xs sm:text-sm">
+                <div className="whitespace-pre-line text-xs sm:text-sm space-y-2">
                   {msg.text}
                 </div>
-                <div className={`text-[10px] mt-1.5 ${msg.sender === 'user' ? 'text-orange-100' : 'text-slate-400'}`}>
+                <div className={`text-[10px] mt-2 ${msg.sender === 'user' ? 'text-orange-100' : 'text-slate-400'}`}>
                   {msg.timestamp}
                 </div>
               </div>
 
               {msg.sender === 'user' && (
-                <div className="w-7 h-7 rounded-xl bg-amber-100 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                   <User className="w-4 h-4" />
                 </div>
               )}
@@ -218,23 +290,23 @@ Provide a concise, practical, and empathetic answer (max 3-4 bullet points or sh
           ))}
 
           {isLoading && (
-            <div className="flex items-center gap-2 text-xs text-orange-600 p-2">
-              <Loader2 className="w-4 h-4 animate-spin" />
-              <span>AI Advisor is analyzing Indian academic pathways...</span>
+            <div className="flex items-center gap-2 text-xs text-orange-600 p-2 bg-orange-50/80 rounded-xl border border-orange-200/50 w-fit">
+              <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
+              <span className="font-medium">AI Career Advisor is generating strategic guidance...</span>
             </div>
           )}
         </div>
 
         {/* Quick Question Pills */}
-        <div className="px-4 py-2 bg-white border-t border-orange-100 flex items-center gap-2 overflow-x-auto scrollbar-none">
+        <div className="px-4 py-2.5 bg-white border-t border-orange-100 flex items-center gap-2 overflow-x-auto scrollbar-none">
           <span className="text-[10px] text-slate-500 font-bold shrink-0 flex items-center gap-1">
-            <Lightbulb className="w-3 h-3 text-amber-500" /> Suggestions:
+            <Lightbulb className="w-3.5 h-3.5 text-amber-500" /> Quick Topics:
           </span>
           {SAMPLE_PROMPTS.map((prompt, i) => (
             <button
               key={i}
               onClick={() => handleSendMessage(prompt)}
-              className="text-[11px] px-2.5 py-1 rounded-full bg-orange-50 hover:bg-orange-100 hover:text-orange-700 text-slate-700 border border-orange-200 whitespace-nowrap shrink-0 transition-all cursor-pointer"
+              className="text-[11px] px-3 py-1.5 rounded-full bg-orange-50 hover:bg-orange-100 hover:text-orange-700 text-slate-700 border border-orange-200/80 whitespace-nowrap shrink-0 transition-all cursor-pointer shadow-2xs font-medium"
             >
               {prompt}
             </button>
@@ -254,15 +326,16 @@ Provide a concise, practical, and empathetic answer (max 3-4 bullet points or sh
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder="Ask anything about entrance cutoffs, backup options, or physical fitness tests..."
-              className="flex-1 px-3.5 py-2 rounded-xl bg-slate-50 text-slate-900 placeholder:text-slate-400 border border-slate-200 text-xs sm:text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition-all"
+              placeholder="Ask about entrance cutoffs, backup options, physical fitness, or fee structures..."
+              className="flex-1 px-4 py-2.5 rounded-xl bg-stone-50 text-slate-900 placeholder:text-slate-400 border border-orange-200/80 text-xs sm:text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition-all shadow-inner"
             />
             <button
               type="submit"
               disabled={!inputText.trim() || isLoading}
-              className="p-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-40 transition-all cursor-pointer shadow-md shadow-orange-500/20"
+              className="p-2.5 sm:px-4 sm:py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white disabled:opacity-40 transition-all cursor-pointer shadow-md shadow-orange-500/20 font-semibold flex items-center gap-1.5"
             >
               <Send className="w-4 h-4" />
+              <span className="hidden sm:inline text-xs">Send</span>
             </button>
           </form>
         </div>

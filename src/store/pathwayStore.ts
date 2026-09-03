@@ -68,7 +68,7 @@ export const usePathwayStore = create<PathwayState>()(
       isCustomRoleLoading: false,
 
       bookmarkedRoleIds: ['soldier_defense_forces', 'vlsi_semiconductor_engineer', 'civil_services_officer', 'film_director', 'commercial_pilot'],
-      geminiApiKey: '',
+      geminiApiKey: (import.meta as any).env?.VITE_GEMINI_API_KEY || '',
       themeMode: 'light',
 
       navigateToHome: () => {

@@ -93,8 +93,29 @@ User: ${textToSend}
 Instructions:
 Provide a clear, empowering, and realistic answer in concise bullet points with Indian context (specific exams like JEE/NDA/NEET/CUET/GATE/UPSC, realistic cutoffs, physical fitness standards if applicable, top government/private institutions, backup lateral options, and immediate next steps).`;
 
-      // 1. Try Gemini 2.0 Flash REST API
-      if (currentKey) {
+      // 1. First try secure Serverless Proxy /api/chat (keeps GEMINI_API_KEY 100% private)
+      try {
+        const serverRes = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt: textToSend,
+            systemPrompt
+          })
+        });
+
+        if (serverRes.ok) {
+          const serverData = await serverRes.json();
+          if (serverData.reply) {
+            botReply = serverData.reply;
+          }
+        }
+      } catch (proxyErr) {
+        console.warn('Serverless proxy unavailable, checking client fallback:', proxyErr);
+      }
+
+      // 2. Client-side fallback if direct key is present in browser state
+      if (!botReply && currentKey) {
         try {
           const res = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${currentKey}`,
@@ -130,7 +151,7 @@ Provide a clear, empowering, and realistic answer in concise bullet points with 
             }
           }
         } catch (apiErr) {
-          console.warn('Gemini API call encountered an issue, generating smart local guidance:', apiErr);
+          console.warn('Gemini direct API call fallback:', apiErr);
         }
       }
 

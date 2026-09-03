@@ -25,6 +25,7 @@ export const UNIVERSAL_DOMAINS: CareerDomain[] = [
     iconName: 'Palette',
     accentColor: '#ec4899',
     popularRoles: [
+      { id: 'professional_photographer', title: 'Professional Photographer & Cinematographer', slug: 'professional-photographer' },
       { id: 'ui_ux_designer', title: 'Product & UI/UX Designer', slug: 'ui-ux-designer' },
       { id: 'fashion_designer', title: 'Haute Couture & Apparel Designer', slug: 'fashion-designer' },
       { id: 'game_3d_artist', title: '3D Game Artist & Character Modeler', slug: 'game-3d-artist' },
@@ -86,7 +87,7 @@ export const UNIVERSAL_DOMAINS: CareerDomain[] = [
     iconName: 'Scale',
     accentColor: '#8b5cf6',
     popularRoles: [
-      { id: 'ias_officer', title: 'IAS / IPS Civil Services Officer', slug: 'ias-ips-officer' },
+      { id: 'civil_services_officer', title: 'Civil Services Officer (IAS/IPS/State Groups)', slug: 'civil-services-officer' },
       { id: 'corporate_lawyer', title: 'Corporate M&A Lawyer & Legal Counsel', slug: 'corporate-lawyer' },
       { id: 'supreme_court_advocate', title: 'Litigation Advocate & Judicial Magistrate', slug: 'litigation-lawyer' },
       { id: 'diplomat_ifs', title: 'Diplomat / Indian Foreign Service (IFS)', slug: 'diplomat-ifs' },
@@ -101,6 +102,7 @@ export const UNIVERSAL_DOMAINS: CareerDomain[] = [
     iconName: 'Cpu',
     accentColor: '#3b82f6',
     popularRoles: [
+      { id: 'vlsi_semiconductor_engineer', title: 'VLSI Design & Semiconductor Chip Engineer', slug: 'vlsi-semiconductor-engineer' },
       { id: 'ai_engineer', title: 'Artificial Intelligence & ML Engineer', slug: 'ai-engineer' },
       { id: 'game_developer', title: 'Game Engine & Gameplay Programmer', slug: 'game-developer' },
       { id: 'cybersecurity_expert', title: 'Cyber Defense & Ethical Hacker', slug: 'cybersecurity-expert' },

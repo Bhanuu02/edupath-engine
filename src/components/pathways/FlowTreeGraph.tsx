@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { usePathwayStore } from '../../store/pathwayStore';
 import { StreamToggleBar } from './StreamToggleBar';
 import { MilestoneCard } from './MilestoneCard';
@@ -10,11 +10,14 @@ import {
   Clock, 
   DollarSign, 
   Layers, 
-  Share2, 
   CheckCircle,
   Briefcase,
   AlertTriangle,
-  Scale
+  Scale,
+  GraduationCap,
+  Boxes,
+  Rotate3d,
+  Compass
 } from 'lucide-react';
 
 export const FlowTreeGraph: React.FC = () => {
@@ -27,24 +30,27 @@ export const FlowTreeGraph: React.FC = () => {
     setCopilotOpen
   } = usePathwayStore();
 
+  const [is3DMode, setIs3DMode] = useState(false);
+  const [spatialRotation, setSpatialRotation] = useState({ x: 12, y: -6 });
+
   const isBookmarked = bookmarkedRoleIds.includes(activeRole.id);
   const streamData = activeRole.streams[selectedStream] || activeRole.streams['MPC'] || Object.values(activeRole.streams)[0];
 
   return (
     <div id="roadmap-flow-container" className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
       
-      {/* 1. Main Career Header Card */}
+      {/* 1. Main Career Header Card with 3D Depth */}
       <div className="glass-panel rounded-3xl p-5 sm:p-7 border border-slate-700/80 shadow-2xl relative overflow-hidden">
         
         {/* Background Radial Glow */}
         <div 
-          className="absolute -right-20 -top-20 w-64 h-64 rounded-full opacity-20 blur-3xl pointer-events-none"
+          className="absolute -right-20 -top-20 w-72 h-72 rounded-full opacity-25 blur-3xl pointer-events-none"
           style={{ backgroundColor: streamData.themeColor.primary }}
         />
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             
             {/* Domain & Demand Badges */}
             <div className="flex items-center gap-2 flex-wrap">
@@ -71,6 +77,21 @@ export const FlowTreeGraph: React.FC = () => {
               {activeRole.shortDescription}
             </p>
 
+            {/* Target Degree & Branch Recommendation Banner */}
+            {(activeRole.recommendedDegreeBranch || streamData.branchSelectionStrategy) && (
+              <div className="p-3.5 rounded-2xl bg-gradient-to-r from-blue-950/80 via-indigo-950/80 to-purple-950/80 border border-indigo-500/40 text-xs text-slate-200 flex items-start gap-3 shadow-lg">
+                <GraduationCap className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
+                <div className="space-y-0.5">
+                  <div className="font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
+                    Recommended Higher Degree & Core Branch Specialization
+                  </div>
+                  <p className="text-slate-100 font-medium leading-relaxed">
+                    {streamData.branchSelectionStrategy || activeRole.recommendedDegreeBranch}
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Holistic Multi-Stream Insight Alert */}
             <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 text-xs text-slate-300 flex items-start gap-2.5 mt-2">
               <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
@@ -85,6 +106,20 @@ export const FlowTreeGraph: React.FC = () => {
           {/* Action Buttons */}
           <div className="flex md:flex-col items-center gap-2 shrink-0 self-start md:self-auto">
             
+            {/* 3D Spatial Toggle Button */}
+            <button
+              onClick={() => setIs3DMode(!is3DMode)}
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                is3DMode
+                  ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white border-cyan-400 shadow-lg shadow-cyan-500/30 animate-pulse'
+                  : 'bg-slate-900/80 hover:bg-slate-800 text-cyan-300 border-cyan-500/30'
+              }`}
+              title="Toggle 3D Spatial Matrix view"
+            >
+              <Boxes className="w-4 h-4 text-cyan-300" />
+              <span>{is3DMode ? '3D Active' : '3D View'}</span>
+            </button>
+
             <button
               onClick={() => toggleBookmark(activeRole.id)}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
@@ -190,8 +225,46 @@ export const FlowTreeGraph: React.FC = () => {
         </button>
       </div>
 
-      {/* 4. Chronological Milestone Tree Container */}
-      <div className="space-y-2 pt-2">
+      {/* 3D Spatial Controls Bar when 3D Mode is Enabled */}
+      {is3DMode && (
+        <div className="p-3.5 rounded-2xl bg-cyan-950/40 border border-cyan-500/40 flex flex-wrap items-center justify-between gap-3 text-xs text-cyan-200 animate-in fade-in zoom-in-95">
+          <div className="flex items-center gap-2">
+            <Rotate3d className="w-4 h-4 text-cyan-400 animate-spin" style={{ animationDuration: '6s' }} />
+            <span><strong>3D Spatial Perspective View Active:</strong> Experience depth transformations and node elevation.</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setSpatialRotation(prev => ({ ...prev, x: prev.x + 4 }))}
+              className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-cyan-500/30 text-cyan-300 cursor-pointer"
+            >
+              Tilt +X
+            </button>
+            <button
+              onClick={() => setSpatialRotation(prev => ({ ...prev, x: Math.max(0, prev.x - 4) }))}
+              className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-cyan-500/30 text-cyan-300 cursor-pointer"
+            >
+              Tilt -X
+            </button>
+            <button
+              onClick={() => setSpatialRotation({ x: 0, y: 0 })}
+              className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-cyan-500/30 text-slate-400 cursor-pointer"
+            >
+              Reset 3D
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 4. Chronological Milestone Tree Container (with 3D Container Transform) */}
+      <div 
+        className={`space-y-2 pt-2 transition-all duration-500 ${
+          is3DMode ? 'origin-top' : ''
+        }`}
+        style={is3DMode ? {
+          transform: `perspective(1200px) rotateX(${spatialRotation.x}deg) rotateY(${spatialRotation.y}deg)`,
+          transformStyle: 'preserve-3d'
+        } : undefined}
+      >
         <div className="flex items-center justify-between border-b border-slate-800 pb-2">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
             <Clock className="w-4 h-4 text-indigo-400" />

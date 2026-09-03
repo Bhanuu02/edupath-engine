@@ -26,8 +26,10 @@ export type MilestonePhase =
   | 'PHASE_2_EXAMS' 
   | 'PHASE_3_DEGREE' 
   | 'PHASE_4_LATERAL' 
-  | 'PHASE_5_OUTCOME';
+  | 'PHASE_5_OUTCOME'
+  | 'PHASE_POST_GRAD_RECRUITMENT';
 
+export type ExamLevel = '10TH' | '12TH' | 'LATERAL' | 'GRADUATE' | 'POST_GRAD_JOB';
 export type CompetitionLevel = 'LOW' | 'MODERATE' | 'HIGH' | 'VERY_HIGH' | 'EXTREME';
 export type InvestmentLevel = 'FREE_SCHOLARSHIP' | 'LOW' | 'MODERATE' | 'HIGH' | 'PREMIUM';
 
@@ -36,7 +38,7 @@ export interface ExamGateway {
   name: string;
   fullName: string;
   conductingBody: string;
-  targetLevel: '10TH' | '12TH' | 'LATERAL' | 'GRADUATE';
+  targetLevel: ExamLevel;
   category: string;
   eligibility: string;
   examPattern: string;
@@ -56,8 +58,10 @@ export interface MilestoneNode {
   subtitle: string;
   durationYears?: string;
   description: string;
+  branchOrSpecializationToChoose?: string; // Explicit branch/major guidance (e.g. B.Tech ECE for VLSI)
   mandatoryEligibility: string[];
-  examGateways: string[]; // references ExamGateway IDs
+  examGateways: string[]; // references ExamGateway IDs at 10th/12th/Degree/Post-Grad
+  postDegreeExams?: string[]; // Recruitment or post-grad exams (UPSC, GATE, State PSCs, CAT, etc.)
   recommendedInstitutions: string[];
   skillsToAcquire: string[];
   estimatedCostRange: string;
@@ -96,6 +100,7 @@ export interface StreamPathway {
     glow: string;
   };
   approachPhilosophy: string;
+  branchSelectionStrategy?: string; // High-level branch/specialization strategy
   milestones: MilestoneNode[];
   lateralSwitches: LateralSwitchPoint[];
   metrics: StreamPathwayMetrics;
@@ -118,6 +123,7 @@ export interface CareerRole {
   domainName: string;
   shortDescription: string;
   holisticInsight: string;
+  recommendedDegreeBranch?: string; // E.g. "B.Tech in ECE / Microelectronics" for VLSI
   iconName: string;
   tags: string[];
   marketDemand: 'STEADY' | 'HIGH' | 'EXPLOSIVE';

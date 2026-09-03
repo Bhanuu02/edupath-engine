@@ -3,6 +3,9 @@ import { CREATIVE_ARTS_PATHWAYS } from './pathways/creativeArts';
 import { AVIATION_DEFENSE_PATHWAYS } from './pathways/aviationDefense';
 import { LAW_CIVIL_PATHWAYS } from './pathways/lawCivilServices';
 import { CULINARY_HOSPITALITY_PATHWAYS } from './pathways/culinaryHospitality';
+import { VLSI_ENGINEER_PATHWAY } from './pathways/semiconductorVlsi';
+import { PHOTOGRAPHY_PATHWAY } from './pathways/photographyVisual';
+import { CIVIL_SERVICES_PATHWAY } from './pathways/civilServicesGov';
 
 // Base Pathways (Film Director, Actor, AI Engineer)
 const STREAM_THEMES = {
@@ -999,5 +1002,8 @@ export const CURATED_CAREER_PATHWAYS: Record<string, CareerRole> = {
   ...CREATIVE_ARTS_PATHWAYS,
   ...AVIATION_DEFENSE_PATHWAYS,
   ...LAW_CIVIL_PATHWAYS,
-  ...CULINARY_HOSPITALITY_PATHWAYS
+  ...CULINARY_HOSPITALITY_PATHWAYS,
+  vlsi_semiconductor_engineer: VLSI_ENGINEER_PATHWAY,
+  professional_photographer: PHOTOGRAPHY_PATHWAY,
+  civil_services_officer: CIVIL_SERVICES_PATHWAY
 };

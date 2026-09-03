@@ -495,7 +495,7 @@ export const SOLDIER_DEFENSE_PATHWAY: CareerRole = {
           recommendedInstitutions: ['Secondary Schools'],
           skillsToAcquire: ['Running Endurance', 'Public Speaking & English Fluency'],
           estimatedCostRange: 'Nominal School Fees',
-          keyActionTip: 'Join NCC (National Cadet Corps) in school to earn 'A' and 'B' certificates for direct SSB entry.'
+          keyActionTip: "Join NCC (National Cadet Corps) in school to earn 'A' and 'B' certificates for direct SSB entry."
         },
         {
           id: 'm_soldier_hec_2',
@@ -510,7 +510,7 @@ export const SOLDIER_DEFENSE_PATHWAY: CareerRole = {
           recommendedInstitutions: ['Junior Colleges with NCC Wing'],
           skillsToAcquire: ['Geopolitical Awareness', 'Group Leadership & Extempore'],
           estimatedCostRange: '₹20,000 - ₹50,000',
-          keyActionTip: 'Earn NCC 'C' Certificate with 'A' Grade for direct SSB Interview call without written exam.'
+          keyActionTip: "Earn NCC 'C' Certificate with 'A' Grade for direct SSB Interview call without written exam."
         },
         {
           id: 'm_soldier_hec_3',

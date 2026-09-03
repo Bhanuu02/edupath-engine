@@ -31,7 +31,7 @@ export const CareerCopilotModal: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       sender: 'assistant',
-      text: `Hello! I am your AI Career Copilot for **${activeRole.title}** on the **${selectedStream} Stream Pathway**. Ask me anything about entrance cutoffs, backup plans, lateral switches, or syllabus preparation strategies!`,
+      text: `Hello! I am your AI Career Copilot for **${activeRole.title}** on the **${selectedStream} Stream Pathway**. Ask me anything about entrance cutoffs, backup plans, physical fitness tests, lateral switches, or syllabus preparation strategies!`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -59,14 +59,13 @@ export const CareerCopilotModal: React.FC = () => {
     try {
       let botReply = '';
 
-      if (geminiApiKey && geminiApiKey.length > 10) {
-        const systemPrompt = `You are the lead AI Career Counselor for Indian students navigating career pathways.
-Current Context:
-Target Career: ${activeRole.title} (${activeRole.domainName})
-Active Post-10th Stream: ${selectedStream} Pathway
-Stream Details: ${activeRole.streams[selectedStream]?.approachPhilosophy || ''}
+      if (geminiApiKey) {
+        const prompt = `You are an expert Indian Career Counselor and Academic Strategist.
+Target Career Role: ${activeRole.title} (${activeRole.domainName})
+Active Stream: ${selectedStream}
+User Question: "${textToSend}"
 
-Provide concise, highly actionable, empathetic, and factual Indian academic advice citing real entrance exams (e.g. JEE, NEET, CUET, CLAT, FTII, POLYCET, ECET), eligibility rules, backup lateral switches, and preparation timetables. Keep answers under 3 paragraphs with bullet points.`;
+Provide a concise, practical, and empathetic answer (max 3-4 bullet points or short paragraphs). Mention specific Indian exam gateways, realistic cutoffs, lateral bridges, and actionable tips.`;
 
         const response = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`,
@@ -74,56 +73,45 @@ Provide concise, highly actionable, empathetic, and factual Indian academic advi
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              contents: [
-                {
-                  parts: [{ text: `${systemPrompt}\n\nStudent Question: ${textToSend}` }]
-                }
-              ]
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0.7, maxOutputTokens: 600 }
             })
           }
         );
 
         if (response.ok) {
           const data = await response.json();
-          botReply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'I analyzed your query based on current Indian academic regulations.';
+          botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
         }
       }
 
       if (!botReply) {
-        // Intelligent built-in heuristic advisor responses
-        const q = textToSend.toLowerCase();
-        if (q.includes('fail') || q.includes('backup') || q.includes('qualify')) {
-          botReply = `If you do not crack the top-tier entrance exam for **${activeRole.title}**, here are proven parallel backup routes:\n\n` +
-            `1. **State University Entrance & Merit Lateral**: State CETs (EAMCET, MHCET, KCET) provide accredited degrees with identical industry eligibility.\n` +
-            `2. **Lateral Bridge Gateways**: Consider a 3-Year Polytechnic Diploma -> ECET into 2nd-year B.Tech, or B.Sc/BCA -> NIMCET into MCA.\n` +
-            `3. **Independent Portfolio Track**: Top tech and creative studios (gaming, VFX, coding, design) evaluate GitHub/Behance portfolios above institute names.`;
-        } else if (q.includes('switch') || q.includes('non-science') || q.includes('arts')) {
-          botReply = `Yes! **${activeRole.title}** can be entered from non-science streams:\n\n` +
-            `• **NIOS Bridge**: Clear a single subject (Maths/Physics) via NIOS on-demand exams if needed for specific licenses (like DGCA Pilot CPL).\n` +
-            `• **Post-Graduate Conversions**: Complete any bachelor’s degree (B.A./B.Com) and appear for FTII JET, 3-Year LL.B (CLAT PG / DU LL.B), or Master’s design exams (CEED / NID).`;
-        } else if (q.includes('affordable') || q.includes('cost') || q.includes('fees')) {
-          botReply = `The most cost-effective institutions for **${activeRole.title}** are:\n\n` +
-            `• **Central & State Government Universities** (e.g., Delhi University, JNU, State IHMs, FTII, Central Polytechnics) where annual tuition is subsidized (< ₹10,000 to ₹50,000/yr).\n` +
-            `• **Fully Funded Residencies**: National School of Drama (NSD) and Oberoi STEP provide 100% free tuition with monthly student stipends.`;
+        const stream = activeRole.streams[selectedStream] || Object.values(activeRole.streams)[0];
+        const lower = textToSend.toLowerCase();
+
+        if (lower.includes('exam') || lower.includes('cutoff') || lower.includes('prepare')) {
+          botReply = `For **${activeRole.title}** in **${selectedStream}**, the primary gateway exams include ${stream.milestones[1]?.examGateways?.join(', ') || 'National / State level entrance tests'}. \n\n• **Strategy**: Focus on solving past 5-year question banks and maintaining minimum 60% board aggregate.\n• **Backup Plan**: If competitive rank is missed, consider lateral admission via ${selectedStream === 'MPC' ? 'Polytechnic Diploma (POLYCET -> ECET)' : 'State University CUET / Merit seats'}.`;
+        } else if (lower.includes('switch') || lower.includes('non-science') || lower.includes('lateral')) {
+          botReply = `Yes! NEP 2020 and modern industry allow lateral flexibility:\n\n• **Bridge Gateways**: ${stream.lateralSwitches?.map(s => s.title).join(', ') || 'Open university bridges and portfolio certifications'}.\n• **Key Advice**: Practical portfolio and domain certifications outweigh non-traditional degree backgrounds.`;
         } else {
-          botReply = `For **${activeRole.title}** on the **${selectedStream} Stream**, the key is maintaining solid 10+2 board marks (> 60%) while dedicating 5-8 hours weekly to domain-specific skills (coding, sketching, theatre, sports, or creative portfolios). Would you like specific guidance on entrance exam syllabus weightages?`;
+          botReply = `Great question regarding **${activeRole.title}**! \n\n• **Duration & Trajectory**: Estimated ${stream.metrics.timeToFirstJobYears} years to first job.\n• **Expected Entry Salary**: ₹${stream.salarySpectrumLpa.entryMin}L - ₹${stream.salarySpectrumLpa.entryMax}L LPA with senior trajectory to ₹${stream.salarySpectrumLpa.experiencedPeak}L+.\n• **Recommended Focus**: ${stream.pros[0]}.`;
         }
       }
 
-      const botMsg: ChatMessage = {
-        sender: 'assistant',
-        text: botReply,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-
-      setMessages((prev) => [...prev, botMsg]);
-    } catch (e) {
-      console.error('Copilot error:', e);
       setMessages((prev) => [
         ...prev,
         {
           sender: 'assistant',
-          text: 'I ran into an issue connecting with live AI. Check your API key or try one of the popular roadmap prompts below!',
+          text: botReply,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ]);
+    } catch (err) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: 'assistant',
+          text: 'Thank you for your question. As you prepare, prioritize mastering core milestone subjects and exploring lateral bridges if competitive cutoffs vary.',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
@@ -133,27 +121,22 @@ Provide concise, highly actionable, empathetic, and factual Indian academic advi
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/85 backdrop-blur-xl animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xl animate-in fade-in duration-150">
       
-      <div className="relative w-full max-w-2xl h-[88vh] flex flex-col glass-panel rounded-3xl border border-slate-700 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150">
+      <div className="relative w-full max-w-2xl h-[85vh] flex flex-col bg-white rounded-3xl border border-orange-200 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150">
         
         {/* Header */}
-        <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
+        <div className="p-4 sm:p-5 border-b border-orange-100 flex items-center justify-between bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 text-white">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/25">
-              <Bot className="w-5 h-5" />
+            <div className="p-2 rounded-xl bg-white/20 text-white border border-white/30">
+              <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-white font-display">
-                  AI Career Copilot
-                </h3>
-                <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                  {selectedStream} Mode
-                </span>
-              </div>
-              <p className="text-xs text-slate-400">
-                Contextual advisory for <strong>{activeRole.title}</strong>
+              <h3 className="text-base sm:text-lg font-bold text-white font-display">
+                AI Career Copilot
+              </h3>
+              <p className="text-xs text-orange-100">
+                Live strategic counselor for {activeRole.title} ({selectedStream})
               </p>
             </div>
           </div>
@@ -161,37 +144,37 @@ Provide concise, highly actionable, empathetic, and factual Indian academic advi
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowKeyInput(!showKeyInput)}
-              className="p-2 rounded-xl text-slate-400 hover:text-indigo-300 bg-slate-800/80 hover:bg-slate-800 transition-colors cursor-pointer"
-              title="Configure Gemini API Key"
+              className="p-1.5 rounded-xl text-orange-100 hover:text-white bg-white/15 hover:bg-white/25 transition-colors cursor-pointer"
+              title="Add Gemini API Key for dynamic real-time AI"
             >
               <Key className="w-4 h-4" />
             </button>
 
             <button
               onClick={() => setCopilotOpen(false)}
-              className="p-2 rounded-xl text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-800 transition-colors cursor-pointer"
+              className="p-1.5 rounded-xl text-orange-100 hover:text-white bg-white/15 hover:bg-white/25 transition-colors cursor-pointer"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
         {/* Optional Gemini API Key Drawer */}
         {showKeyInput && (
-          <div className="p-3 bg-slate-900 border-b border-slate-800 flex items-center gap-2 text-xs">
+          <div className="p-3 bg-orange-50 border-b border-orange-200 flex items-center gap-2 text-xs">
             <input
               type="password"
               value={tempApiKey}
               onChange={(e) => setTempApiKey(e.target.value)}
-              placeholder="Paste Google Gemini API Key (optional for live AI synthesis)"
-              className="flex-1 px-3 py-1.5 rounded-lg bg-slate-950 text-white border border-slate-700 text-xs focus:outline-none focus:border-indigo-500"
+              placeholder="Paste Google Gemini API Key (Optional)"
+              className="flex-1 px-3 py-1.5 rounded-lg bg-white border border-orange-300 text-slate-800 text-xs focus:outline-none focus:border-orange-500"
             />
             <button
               onClick={() => {
                 setGeminiApiKey(tempApiKey);
                 setShowKeyInput(false);
               }}
-              className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs cursor-pointer"
+              className="px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-semibold cursor-pointer"
             >
               Save Key
             </button>
@@ -199,14 +182,14 @@ Provide concise, highly actionable, empathetic, and factual Indian academic advi
         )}
 
         {/* Chat Message Thread */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 text-xs sm:text-sm">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 text-xs sm:text-sm bg-slate-50/50">
           {messages.map((msg, idx) => (
             <div
               key={idx}
               className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {msg.sender === 'assistant' && (
-                <div className="w-7 h-7 rounded-xl bg-indigo-600/30 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-7 h-7 rounded-xl bg-orange-100 text-orange-600 border border-orange-200 flex items-center justify-center shrink-0 mt-0.5">
                   <Bot className="w-4 h-4" />
                 </div>
               )}
@@ -214,20 +197,20 @@ Provide concise, highly actionable, empathetic, and factual Indian academic advi
               <div
                 className={`max-w-[85%] p-3.5 rounded-2xl leading-relaxed ${
                   msg.sender === 'user'
-                    ? 'bg-indigo-600 text-white rounded-br-none shadow-md shadow-indigo-600/20'
-                    : 'bg-slate-900/90 text-slate-200 border border-slate-800 rounded-bl-none'
+                    ? 'bg-orange-500 text-white rounded-br-none shadow-md shadow-orange-500/20'
+                    : 'bg-white text-slate-800 border border-orange-200/80 shadow-sm rounded-bl-none'
                 }`}
               >
                 <div className="whitespace-pre-line text-xs sm:text-sm">
                   {msg.text}
                 </div>
-                <div className={`text-[10px] mt-1.5 ${msg.sender === 'user' ? 'text-indigo-200' : 'text-slate-500'}`}>
+                <div className={`text-[10px] mt-1.5 ${msg.sender === 'user' ? 'text-orange-100' : 'text-slate-400'}`}>
                   {msg.timestamp}
                 </div>
               </div>
 
               {msg.sender === 'user' && (
-                <div className="w-7 h-7 rounded-xl bg-purple-600/30 text-purple-400 border border-purple-500/30 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-7 h-7 rounded-xl bg-amber-100 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0 mt-0.5">
                   <User className="w-4 h-4" />
                 </div>
               )}
@@ -235,7 +218,7 @@ Provide concise, highly actionable, empathetic, and factual Indian academic advi
           ))}
 
           {isLoading && (
-            <div className="flex items-center gap-2 text-xs text-indigo-400 p-2">
+            <div className="flex items-center gap-2 text-xs text-orange-600 p-2">
               <Loader2 className="w-4 h-4 animate-spin" />
               <span>AI Advisor is analyzing Indian academic pathways...</span>
             </div>
@@ -243,15 +226,15 @@ Provide concise, highly actionable, empathetic, and factual Indian academic advi
         </div>
 
         {/* Quick Question Pills */}
-        <div className="px-4 py-2 bg-slate-900/60 border-t border-slate-800/60 flex items-center gap-2 overflow-x-auto scrollbar-none">
-          <span className="text-[10px] text-slate-400 font-bold shrink-0 flex items-center gap-1">
-            <Lightbulb className="w-3 h-3 text-amber-400" /> Suggestions:
+        <div className="px-4 py-2 bg-white border-t border-orange-100 flex items-center gap-2 overflow-x-auto scrollbar-none">
+          <span className="text-[10px] text-slate-500 font-bold shrink-0 flex items-center gap-1">
+            <Lightbulb className="w-3 h-3 text-amber-500" /> Suggestions:
           </span>
           {SAMPLE_PROMPTS.map((prompt, i) => (
             <button
               key={i}
               onClick={() => handleSendMessage(prompt)}
-              className="text-[11px] px-2.5 py-1 rounded-full bg-slate-800/80 hover:bg-indigo-600/20 hover:text-indigo-300 text-slate-300 border border-slate-700/60 whitespace-nowrap shrink-0 transition-all cursor-pointer"
+              className="text-[11px] px-2.5 py-1 rounded-full bg-orange-50 hover:bg-orange-100 hover:text-orange-700 text-slate-700 border border-orange-200 whitespace-nowrap shrink-0 transition-all cursor-pointer"
             >
               {prompt}
             </button>
@@ -259,7 +242,7 @@ Provide concise, highly actionable, empathetic, and factual Indian academic advi
         </div>
 
         {/* Input Footer */}
-        <div className="p-3 sm:p-4 bg-slate-900 border-t border-slate-800">
+        <div className="p-3 sm:p-4 bg-white border-t border-orange-100">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -271,13 +254,13 @@ Provide concise, highly actionable, empathetic, and factual Indian academic advi
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder="Ask anything about entrance cutoffs, backup options, or preparation..."
-              className="flex-1 px-3.5 py-2 rounded-xl bg-slate-950 text-white placeholder:text-slate-500 border border-slate-700 text-xs sm:text-sm focus:outline-none focus:border-indigo-500"
+              placeholder="Ask anything about entrance cutoffs, backup options, or physical fitness tests..."
+              className="flex-1 px-3.5 py-2 rounded-xl bg-slate-50 text-slate-900 placeholder:text-slate-400 border border-slate-200 text-xs sm:text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition-all"
             />
             <button
               type="submit"
               disabled={!inputText.trim() || isLoading}
-              className="p-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white disabled:opacity-40 transition-all cursor-pointer shadow-md shadow-indigo-600/25"
+              className="p-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-40 transition-all cursor-pointer shadow-md shadow-orange-500/20"
             >
               <Send className="w-4 h-4" />
             </button>

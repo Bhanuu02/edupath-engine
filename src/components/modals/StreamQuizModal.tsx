@@ -8,7 +8,17 @@ import {
   ArrowRight, 
   RotateCcw,
   Sparkles,
-  Trophy
+  Trophy,
+  Shield,
+  Cpu,
+  Scale,
+  TrendingUp,
+  Palette,
+  Activity,
+  AlertTriangle,
+  Lightbulb,
+  Zap,
+  Target
 } from 'lucide-react';
 
 interface QuizQuestion {
@@ -19,174 +29,278 @@ interface QuizQuestion {
     label: string;
     description: string;
     streamAffinity: StreamType;
+    domainCategory: 'DEFENSE' | 'STEM' | 'CIVILS' | 'COMMERCE' | 'CREATIVE' | 'MEDICAL';
+    roleRecommendationId: string;
+    roleRecommendationTitle: string;
+    strengthsText: string;
+    blindspotText: string;
   }[];
 }
 
 const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: 1,
-    question: 'How do you naturally prefer solving real-world challenges?',
-    scenario: 'When given an open-ended problem, what sparks your curiosity first?',
+    question: 'What is your primary natural instinct when facing an ambitious challenge?',
+    scenario: 'Imagine you are given complete freedom to lead a major national initiative. What role excites you most?',
     options: [
       {
-        label: 'Mathematical Logic & Computational Systems',
-        description: 'I love formulas, physics, software coding, and structured analytical problem-solving.',
-        streamAffinity: 'MPC'
+        label: 'Frontline Tactical Action, Physical Bravery & Defense Command',
+        description: 'Leading a tactical combat unit, overcoming extreme physical terrain, and defending national security.',
+        streamAffinity: 'MPC',
+        domainCategory: 'DEFENSE',
+        roleRecommendationId: 'soldier_defense_forces',
+        roleRecommendationTitle: 'Soldier & Special Forces Commando (Army/NDA)',
+        strengthsText: 'High physical stamina, courage under pressure, tactical discipline, and strong camaraderie.',
+        blindspotText: 'May find sedentary desk jobs and repetitive paperwork unstimulating.'
       },
       {
-        label: 'Living Systems, Biology & Healthcare',
-        description: 'I am fascinated by genetics, human physiology, nature, and clinical healing.',
-        streamAffinity: 'BiPC'
+        label: 'Designing Advanced Silicon Chips & Computational AI Systems',
+        description: 'Architecting nanometer microprocessors, hardware accelerators, and writing mathematical algorithms.',
+        streamAffinity: 'MPC',
+        domainCategory: 'STEM',
+        roleRecommendationId: 'vlsi_semiconductor_engineer',
+        roleRecommendationTitle: 'VLSI Design & Semiconductor Chip Engineer (ECE)',
+        strengthsText: 'Deep logical reasoning, mathematical precision, and electronic circuit intuition.',
+        blindspotText: 'Requires patience during long debugging and simulation cycles.'
       },
       {
-        label: 'Markets, Capital, Strategy & Entrepreneurship',
-        description: 'I enjoy understanding commerce, business models, stock markets, and financial dynamics.',
-        streamAffinity: 'MEC_CEC'
+        label: 'Transforming Public Administration, Law & District Governance',
+        description: 'Formulating government policy, resolving social inequalities, and administering districts as District Collector / Police Chief.',
+        streamAffinity: 'HEC',
+        domainCategory: 'CIVILS',
+        roleRecommendationId: 'civil_services_officer',
+        roleRecommendationTitle: 'Civil Services Officer (IAS / IPS / State Groups)',
+        strengthsText: 'Strong constitutional ethics, public empathy, critical discourse, and holistic social understanding.',
+        blindspotText: 'Requires endurance to handle high administrative scrutiny and political pressures.'
       },
       {
-        label: 'Human Stories, Law, Philosophy & Creative Arts',
-        description: 'I thrive on storytelling, literature, public policy, civil governance, and dramatic performance.',
-        streamAffinity: 'HEC'
+        label: 'Visual Storytelling, Cinema Direction & Professional Photography',
+        description: 'Directing camera optics, capturing evocative moments, and framing visual narratives for films and global publications.',
+        streamAffinity: 'HEC',
+        domainCategory: 'CREATIVE',
+        roleRecommendationId: 'professional_photographer',
+        roleRecommendationTitle: 'Professional Photographer & Visual Cinematographer',
+        strengthsText: 'Exceptional aesthetic vision, emotional framing, lighting mastery, and creative storytelling.',
+        blindspotText: 'Client-driven freelance timelines require continuous self-promotion and negotiation skills.'
       },
       {
-        label: 'Direct Hands-On Machines & Applied Workshop Tech',
-        description: 'I prefer building with physical circuits, tools, hardware, and immediate practical creation.',
-        streamAffinity: 'POLYTECHNIC'
+        label: 'Financial Capital Markets, Strategy & Enterprise Dealmaking',
+        description: 'Building investment portfolios, scaling high-growth ventures, and analyzing corporate financial models.',
+        streamAffinity: 'MEC_CEC',
+        domainCategory: 'COMMERCE',
+        roleRecommendationId: 'investment_banker',
+        roleRecommendationTitle: 'Investment Banker & Strategic Venture Lead',
+        strengthsText: 'High commercial acumen, quantitative risk assessment, and negotiation leverage.',
+        blindspotText: 'Fast-paced market cycles demand rapid adaptation and stress resilience.'
+      },
+      {
+        label: 'Healing Biological Systems, Medicine & Nature Conservation',
+        description: 'Performing clinical surgeries, saving endangered wildlife species, and developing biotechnological therapies.',
+        streamAffinity: 'BiPC',
+        domainCategory: 'MEDICAL',
+        roleRecommendationId: 'neurosurgeon_specialist',
+        roleRecommendationTitle: 'Medical Specialist & Bio-Clinical Researcher',
+        strengthsText: 'Deep biological curiosity, human empathy, diagnostic patience, and empirical rigor.',
+        blindspotText: 'Long clinical training arcs require sustained multi-year commitment.'
       }
     ]
   },
   {
     id: 2,
-    question: 'What is your preferred learning environment and timeline?',
-    scenario: 'How would you prefer your post-10th education to be structured?',
+    question: 'How do you prefer to balance physical endurance and mental focus?',
+    scenario: 'Which daily routine sounds most energizing and fulfilling to you?',
     options: [
       {
-        label: 'Deep Academic Rigor in Sciences & National Engineering Tests',
-        description: 'Willing to take on heavy mathematics and competitive exams (JEE/BITSAT).',
-        streamAffinity: 'MPC'
+        label: 'Rigorous Physical Training + Field Obstacles + Tactical Drills',
+        description: 'Early morning 5km runs, obstacle courses, shooting ranges, and outdoor physical conditioning.',
+        streamAffinity: 'VOCATIONAL_GUILD',
+        domainCategory: 'DEFENSE',
+        roleRecommendationId: 'soldier_defense_forces',
+        roleRecommendationTitle: 'Soldier & Special Forces Commando (Army/NDA)',
+        strengthsText: 'High pain tolerance, physical agility, resilience in harsh weather, and mission focus.',
+        blindspotText: 'Ensure parallel technical study to qualify for higher military promotion exams.'
       },
       {
-        label: 'Medical/Life Sciences & Laboratory Diagnostics',
-        description: 'Excited by lab experiments, microscopic biology, and clinical empathy.',
-        streamAffinity: 'BiPC'
+        label: 'Deep Focused Lab Sessions with Oscilloscopes, EDA Tools & Code',
+        description: 'Synthesizing Verilog hardware, designing circuit boards, and testing silicon prototypes.',
+        streamAffinity: 'MPC',
+        domainCategory: 'STEM',
+        roleRecommendationId: 'vlsi_semiconductor_engineer',
+        roleRecommendationTitle: 'VLSI Design & Semiconductor Chip Engineer (ECE)',
+        strengthsText: 'Sustained cognitive focus, systematic testing methodologies, and architectural clarity.',
+        blindspotText: 'Remember to incorporate daily physical workouts to offset prolonged screen hours.'
       },
       {
-        label: 'Business Strategy, Accounting & Corporate Deals',
-        description: 'Fast-paced commercial analytics, management cases, and business spreadsheets.',
-        streamAffinity: 'MEC_CEC'
+        label: 'Reading Editorial Discourse, Debating Policy & Field Inspections',
+        description: 'Analyzing constitutional cases, visiting rural development sites, and meeting citizen delegations.',
+        streamAffinity: 'HEC',
+        domainCategory: 'CIVILS',
+        roleRecommendationId: 'civil_services_officer',
+        roleRecommendationTitle: 'Civil Services Officer (IAS / IPS / State Groups)',
+        strengthsText: 'Active listening, holistic social synthesis, and articulate verbal/written communication.',
+        blindspotText: 'Avoid analysis-paralysis by taking decisive time-bound executive actions.'
       },
       {
-        label: 'Reading, Debate, Creative Production & Social Impact',
-        description: 'Passionate about essays, cinema, justice, theatre, and policy reforms.',
-        streamAffinity: 'HEC'
+        label: 'On-Location Wildlife Expeditions & Dynamic Fashion Lighting Sets',
+        description: 'Trekking through rainforests with heavy camera gear or directing dynamic models in high-energy studios.',
+        streamAffinity: 'VOCATIONAL_GUILD',
+        domainCategory: 'CREATIVE',
+        roleRecommendationId: 'professional_photographer',
+        roleRecommendationTitle: 'Professional Photographer & Visual Cinematographer',
+        strengthsText: 'Spontaneous reflexes, adaptability to changing outdoor light, and physical stamina with equipment.',
+        blindspotText: 'Requires disciplined post-production backup and archiving routines.'
       },
       {
-        label: 'Early 3-Year Technical Diploma with Direct Industry Experience',
-        description: 'Fast hands-on path to industry employment with lateral degree options via ECET.',
-        streamAffinity: 'POLYTECHNIC'
+        label: 'Hands-on Mechanical Workshop Fabrication & Applied Robotics',
+        description: 'Working with machines, CNC mills, electronics assembly, and building physical working prototypes.',
+        streamAffinity: 'POLYTECHNIC',
+        domainCategory: 'STEM',
+        roleRecommendationId: 'vlsi_semiconductor_engineer',
+        roleRecommendationTitle: 'Polytechnic Engineering Specialist -> Lateral B.Tech',
+        strengthsText: 'Immediate practical dexterity, hardware troubleshooting, and real-world assembly skills.',
+        blindspotText: 'Bridge theoretical higher mathematics to scale into senior engineering roles.'
       }
     ]
   },
   {
     id: 3,
-    question: 'If your dream project gets stuck, what is your primary instinct?',
-    scenario: 'How do you troubleshoot roadblocks?',
+    question: 'When under intense pressure with tight deadlines, how do you perform best?',
+    scenario: 'A high-stakes crisis unfolds that needs immediate resolution. What is your go-to strength?',
     options: [
       {
-        label: 'Debug the algorithm and break down the math',
-        description: 'Isolate variables, write scripts, and optimize technical bottlenecks.',
-        streamAffinity: 'MPC'
+        label: 'Immediate, calm decisive command taking charge of the group',
+        description: 'Assessing the threat, inspiring team courage, and executing a bold tactical plan without hesitation.',
+        streamAffinity: 'MPC',
+        domainCategory: 'DEFENSE',
+        roleRecommendationId: 'soldier_defense_forces',
+        roleRecommendationTitle: 'Armed Forces Combat Leader / Commando',
+        strengthsText: 'Decisive command presence, psychological calmness during chaos, and team loyalty.',
+        blindspotText: 'Ensure rapid debriefing and listening to specialist inputs when time permits.'
       },
       {
-        label: 'Investigate the root biological or scientific cause',
-        description: 'Formulate a hypothesis, test variables, and apply nature’s design.',
-        streamAffinity: 'BiPC'
+        label: 'Isolating root cause through rigorous logic, metrics and data',
+        description: 'Breaking down the failure tree, inspecting logs, and applying mathematical troubleshooting.',
+        streamAffinity: 'MPC',
+        domainCategory: 'STEM',
+        roleRecommendationId: 'vlsi_semiconductor_engineer',
+        roleRecommendationTitle: 'VLSI Engineer / Hardware AI Architect',
+        strengthsText: 'Objective root-cause deduction, systematic elimination of errors, and precision.',
+        blindspotText: 'Avoid over-complicating solutions when rapid practical patches are needed.'
       },
       {
-        label: 'Re-evaluate the financial budget and resource allocation',
-        description: 'Negotiate with stakeholders, restructure costs, and find new revenue models.',
-        streamAffinity: 'MEC_CEC'
+        label: 'Balancing competing interests and enforcing constitutional fairness',
+        description: 'Listening to all aggrieved parties, mediating conflict, and upholding legal justice.',
+        streamAffinity: 'HEC',
+        domainCategory: 'CIVILS',
+        roleRecommendationId: 'civil_services_officer',
+        roleRecommendationTitle: 'Civil Services Magistrate / IAS Officer',
+        strengthsText: 'Impartial conflict mediation, emotional composure, and legal righteousness.',
+        blindspotText: 'Be prepared for difficult administrative tradeoffs where not all parties can be pleased.'
       },
       {
-        label: 'Rethink the human narrative and emotional connection',
-        description: 'Inspire people through compelling communication, drama, and ethical perspective.',
-        streamAffinity: 'HEC'
-      },
-      {
-        label: 'Take apart the physical equipment and fix the hardware',
-        description: 'Inspect wires, solder components, and calibrate machines manually.',
-        streamAffinity: 'POLYTECHNIC'
+        label: 'Thinking outside the box with creative intuition and quick adaptation',
+        description: 'Finding an unexpected visual angle, improvising with available resources, and turning errors into art.',
+        streamAffinity: 'VOCATIONAL_GUILD',
+        domainCategory: 'CREATIVE',
+        roleRecommendationId: 'professional_photographer',
+        roleRecommendationTitle: 'Creative Visual Director / Photographer',
+        strengthsText: 'Creative resourcefulness, lateral thinking, and rapid aesthetic adaptation.',
+        blindspotText: 'Set clear contingency equipment plans for high-value commercial assignments.'
       }
     ]
   }
 ];
 
 export const StreamQuizModal: React.FC = () => {
-  const { isStreamQuizOpen, setStreamQuizOpen, setSelectedStream } = usePathwayStore();
+  const { isStreamQuizOpen, setStreamQuizOpen, setSelectedStream, setActiveRoleById } = usePathwayStore();
   
   const [currentStep, setCurrentStep] = useState(0);
-  const [selectedAnswers, setSelectedAnswers] = useState<StreamType[]>([]);
-  const [recommendedStream, setRecommendedStream] = useState<StreamType | null>(null);
+  const [selectedAnswers, setSelectedAnswers] = useState<any[]>([]);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   if (!isStreamQuizOpen) return null;
 
-  const handleSelectOption = (stream: StreamType) => {
-    const nextAnswers = [...selectedAnswers, stream];
+  const handleSelectOption = (opt: any) => {
+    const nextAnswers = [...selectedAnswers, opt];
     setSelectedAnswers(nextAnswers);
 
     if (currentStep < QUIZ_QUESTIONS.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Calculate highest frequency stream
-      const counts: Record<string, number> = {};
-      nextAnswers.forEach(s => {
-        counts[s] = (counts[s] || 0) + 1;
-      });
-      let bestStream: StreamType = 'MPC';
-      let maxCount = 0;
-      Object.entries(counts).forEach(([str, count]) => {
-        if (count > maxCount) {
-          maxCount = count;
-          bestStream = str as StreamType;
-        }
-      });
-      setRecommendedStream(bestStream);
+      setIsCompleted(true);
     }
   };
 
   const handleReset = () => {
     setCurrentStep(0);
     setSelectedAnswers([]);
-    setRecommendedStream(null);
+    setIsCompleted(false);
   };
 
-  const handleApplyRecommendation = () => {
-    if (recommendedStream) {
-      setSelectedStream(recommendedStream);
-      setStreamQuizOpen(false);
-      handleReset();
-    }
+  // Calculate Aggregated Insights
+  const calculateResults = () => {
+    const streamCounts: Record<string, number> = {};
+    const domainCounts: Record<string, number> = {};
+    const strengths: string[] = [];
+    const blindspots: string[] = [];
+    const recommendedRoles: { id: string; title: string; category: string }[] = [];
+
+    selectedAnswers.forEach(ans => {
+      streamCounts[ans.streamAffinity] = (streamCounts[ans.streamAffinity] || 0) + 1;
+      domainCounts[ans.domainCategory] = (domainCounts[ans.domainCategory] || 0) + 1;
+      if (ans.strengthsText && !strengths.includes(ans.strengthsText)) {
+        strengths.push(ans.strengthsText);
+      }
+      if (ans.blindspotText && !blindspots.includes(ans.blindspotText)) {
+        blindspots.push(ans.blindspotText);
+      }
+      if (ans.roleRecommendationId && !recommendedRoles.some(r => r.id === ans.roleRecommendationId)) {
+        recommendedRoles.push({
+          id: ans.roleRecommendationId,
+          title: ans.roleRecommendationTitle,
+          category: ans.domainCategory
+        });
+      }
+    });
+
+    let bestStream: StreamType = 'MPC';
+    let maxStreamCount = 0;
+    Object.entries(streamCounts).forEach(([str, count]) => {
+      if (count > maxStreamCount) {
+        maxStreamCount = count;
+        bestStream = str as StreamType;
+      }
+    });
+
+    return {
+      bestStream,
+      strengths: strengths.slice(0, 3),
+      blindspots: blindspots.slice(0, 2),
+      recommendedRoles: recommendedRoles.slice(0, 3),
+      domainCounts
+    };
   };
 
+  const results = isCompleted ? calculateResults() : null;
   const q = QUIZ_QUESTIONS[currentStep];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/85 backdrop-blur-xl animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xl animate-in fade-in duration-150">
       
-      <div className="relative w-full max-w-xl flex flex-col glass-panel rounded-3xl border border-slate-700 shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-2xl max-h-[92vh] flex flex-col bg-white rounded-3xl border border-orange-200 shadow-2xl overflow-hidden text-slate-800 animate-in zoom-in-95 duration-150">
         
-        {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-purple-600/20 text-purple-400 border border-purple-500/30">
-              <HelpCircle className="w-5 h-5" />
+        {/* Header with Warm Orange Glow */}
+        <div className="p-4 sm:p-5 border-b border-orange-100 flex items-center justify-between bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 text-white">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-white/20 backdrop-blur-md text-white shadow-inner">
+              <Sparkles className="w-5 h-5 text-amber-100" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-white font-display">
-                Post-10th Stream Affinity Screener
+              <h3 className="text-base sm:text-lg font-bold font-display text-white">
+                Student Aptitude & Future Role Discovery
               </h3>
-              <p className="text-xs text-slate-400">
-                Discover which educational stream matches your natural learning style.
+              <p className="text-xs text-orange-100">
+                Identify your unique psychological strengths, watch-outs & ideal career roadmaps.
               </p>
             </div>
           </div>
@@ -196,27 +310,27 @@ export const StreamQuizModal: React.FC = () => {
               setStreamQuizOpen(false);
               handleReset();
             }}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-800 transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl text-orange-100 hover:text-white bg-white/15 hover:bg-white/25 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-5 sm:p-6 space-y-4">
+        <div className="p-5 sm:p-6 space-y-5 overflow-y-auto">
           
-          {!recommendedStream ? (
+          {!isCompleted ? (
             <div className="space-y-4">
               
               {/* Progress Indicator */}
-              <div className="flex items-center justify-between text-xs text-slate-400">
-                <span>Question {currentStep + 1} of {QUIZ_QUESTIONS.length}</span>
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <span className="font-semibold text-orange-600">Question {currentStep + 1} of {QUIZ_QUESTIONS.length}</span>
                 <div className="flex gap-1.5">
                   {QUIZ_QUESTIONS.map((_, idx) => (
                     <div 
                       key={idx}
-                      className={`w-6 h-1.5 rounded-full transition-colors ${
-                        idx <= currentStep ? 'bg-indigo-500' : 'bg-slate-800'
+                      className={`w-8 h-2 rounded-full transition-all ${
+                        idx <= currentStep ? 'bg-orange-500 shadow-sm shadow-orange-500/30' : 'bg-slate-200'
                       }`}
                     />
                   ))}
@@ -224,77 +338,167 @@ export const StreamQuizModal: React.FC = () => {
               </div>
 
               {/* Question Heading */}
-              <div>
-                <h4 className="text-base sm:text-lg font-bold text-white font-display">
+              <div className="space-y-1">
+                <h4 className="text-base sm:text-lg font-bold text-slate-900 font-display">
                   {q.question}
                 </h4>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-500">
                   {q.scenario}
                 </p>
               </div>
 
-              {/* Options */}
-              <div className="space-y-2 pt-1">
+              {/* Options Stack */}
+              <div className="space-y-2.5 pt-1">
                 {q.options.map((opt, i) => (
                   <button
                     key={i}
-                    onClick={() => handleSelectOption(opt.streamAffinity)}
-                    className="w-full text-left p-3 sm:p-3.5 rounded-2xl bg-slate-900/80 hover:bg-indigo-950/60 border border-slate-800 hover:border-indigo-500/50 transition-all cursor-pointer group"
+                    onClick={() => handleSelectOption(opt)}
+                    className="w-full text-left p-3.5 sm:p-4 rounded-2xl bg-orange-50/40 hover:bg-orange-50 border border-orange-100/80 hover:border-orange-400 hover:shadow-md hover:shadow-orange-500/10 transition-all cursor-pointer group flex items-start justify-between gap-3"
                   >
-                    <div className="text-xs sm:text-sm font-bold text-white group-hover:text-indigo-300">
-                      {opt.label}
+                    <div className="space-y-0.5">
+                      <div className="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-orange-600 transition-colors">
+                        {opt.label}
+                      </div>
+                      <div className="text-xs text-slate-600">
+                        {opt.description}
+                      </div>
                     </div>
-                    <div className="text-xs text-slate-400 mt-0.5">
-                      {opt.description}
-                    </div>
+                    <ArrowRight className="w-4 h-4 text-orange-300 group-hover:text-orange-500 group-hover:translate-x-1 shrink-0 transition-all mt-0.5" />
                   </button>
                 ))}
               </div>
 
             </div>
-          ) : (
+          ) : results ? (
             
-            /* Results Screen */
-            <div className="text-center py-4 space-y-4 animate-in zoom-in-95 duration-200">
+            /* Comprehensive Results & Profile Screen */
+            <div className="space-y-5 animate-in zoom-in-95 duration-200">
               
-              <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-xl shadow-indigo-500/30 text-white">
-                <Trophy className="w-7 h-7" />
+              {/* Profile Top Banner */}
+              <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 border border-orange-200 shadow-sm flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-orange-500/30 shrink-0">
+                  <Trophy className="w-8 h-8" />
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[11px] uppercase tracking-widest font-bold text-orange-600">
+                    Your Personalized Career Aptitude Profile
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-display">
+                    Recommended Primary Route: {results.bestStream} Stream
+                  </h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Based on your natural instincts, you thrive when high tactical purpose, intellectual depth, and active execution align!
+                  </p>
+                </div>
               </div>
 
-              <div className="space-y-1">
-                <span className="text-xs uppercase tracking-widest font-bold text-indigo-400">
-                  Recommended Stream Match
-                </span>
-                <h3 className="text-2xl font-extrabold text-white font-display">
-                  {recommendedStream} Stream Pathway
-                </h3>
+              {/* Two Column Grid: Strengths (Pros) vs Blindspots (Cons) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                
+                {/* Identified Strengths (Pros) */}
+                <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-2">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800 uppercase tracking-wider">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    Your Core Strengths (Pros)
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-slate-700">
+                    {results.strengths.map((s, idx) => (
+                      <li key={idx} className="flex items-start gap-1.5">
+                        <span className="text-emerald-600 font-bold">•</span>
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Potential Blindspots & Watch-outs (Cons) */}
+                <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-2">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-amber-800 uppercase tracking-wider">
+                    <AlertTriangle className="w-4 h-4 text-amber-600" />
+                    Potential Blindspots & Watch-outs
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-slate-700">
+                    {results.blindspots.map((b, idx) => (
+                      <li key={idx} className="flex items-start gap-1.5">
+                        <span className="text-amber-600 font-bold">•</span>
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
               </div>
 
-              <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
-                Based on your problem-solving instincts, the <strong>{recommendedStream}</strong> stream gives you the optimal balance of academic curiosity, practical execution, and career leverage!
-              </p>
+              {/* Recommended Top Future Roles */}
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  <Target className="w-4 h-4 text-orange-500" />
+                  Top Recommended Career Pathways for You
+                </div>
 
-              <div className="flex items-center justify-center gap-3 pt-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  {results.recommendedRoles.map((role) => (
+                    <div 
+                      key={role.id}
+                      className="p-3.5 rounded-2xl bg-white border border-orange-200 hover:border-orange-400 hover:shadow-md transition-all flex flex-col justify-between space-y-2"
+                    >
+                      <div>
+                        <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-orange-100 text-orange-700">
+                          {role.category}
+                        </span>
+                        <h5 className="text-xs sm:text-sm font-bold text-slate-900 mt-1.5 leading-snug">
+                          {role.title}
+                        </h5>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          setSelectedStream(results.bestStream);
+                          setActiveRoleById(role.id);
+                          setStreamQuizOpen(false);
+                          handleReset();
+                          // Smooth scroll to roadmap
+                          const elem = document.getElementById('roadmap-flow-container');
+                          if (elem) {
+                            elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                          }
+                        }}
+                        className="w-full py-1.5 px-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-[11px] font-bold transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-sm shadow-orange-500/20"
+                      >
+                        <span>Explore Roadmap</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bottom Actions */}
+              <div className="flex items-center justify-between pt-2 border-t border-slate-100">
                 <button
                   onClick={handleReset}
-                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900 border border-slate-800 hover:border-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>Retake Quiz</span>
                 </button>
 
                 <button
-                  onClick={handleApplyRecommendation}
-                  className="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-1.5 cursor-pointer"
+                  onClick={() => {
+                    setSelectedStream(results.bestStream);
+                    setStreamQuizOpen(false);
+                    handleReset();
+                  }}
+                  className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-md shadow-orange-500/30 transition-all flex items-center gap-1.5 cursor-pointer"
                 >
-                  <span>Apply & View {recommendedStream} Roadmap</span>
+                  <span>Apply & View {results.bestStream} Pathway</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
 
             </div>
 
-          )}
+          ) : null}
 
         </div>
 

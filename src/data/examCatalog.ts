@@ -479,5 +479,37 @@ export const COMPREHENSIVE_EXAMS: Record<string, ExamGateway> = {
     syllabusHighlights: ['Class 11 & 12 Mathematics (Algebra, Matrices, Trigonometry, Calculus, Vectors, Probability)', 'English Grammar & Vocabulary (200 marks)', 'General Knowledge: Physics, Chemistry, History, Geography, Current Events (400 marks)', 'SSB Psychology, OIR, PPDT, Command Tasks'],
     keyDatesInfo: 'NDA I: Exam in April | NDA II: Exam in September',
     officialUrl: 'https://upsc.gov.in'
+  },
+  ARMY_AGNIVEER_PFT: {
+    id: 'ARMY_AGNIVEER_PFT',
+    name: 'Army Agniveer Rally & CEE',
+    fullName: 'Indian Army Agniveer Physical Fitness Test (PFT) & Common Entrance Exam (CEE)',
+    conductingBody: 'Army Recruiting Directorate, Ministry of Defence (Govt of India)',
+    targetLevel: '10TH',
+    category: 'Defense Combat & Physical Tests',
+    eligibility: 'Age 17.5 to 21 years. 10th Pass with minimum 45% aggregate and 33% in each subject (GD). 10+2 with PCM (Technical).',
+    examPattern: 'Phase 1: Online CEE (Maths, Science, GK, Reasoning) -> Phase 2: Physical Fitness Rally (1.6 km run, 10 pull-ups, 9ft ditch jump, zig-zag balance) -> Medical Test.',
+    annualApplicants: '~25,00,000 candidates across state district rallies for ~40,000 Agniveer soldier intakes',
+    acceptanceRate: '1.6% (Top 25% retained permanently for 15+ years service)',
+    competitionLevel: 'EXTREME',
+    syllabusHighlights: ['1.6 km Run in < 5 mins 30 secs (Group 1 - 60 marks)', '10 Clean Chin-ups (40 marks)', 'General Science, Mathematics & Basic Military Logic', 'Medical Standard Clearance (6/6 Vision, No Knock-Knees, Flat-Foot)'],
+    keyDatesInfo: 'CEE: April/May | Physical Rallies: June to December by State AROs',
+    officialUrl: 'https://joinindianarmy.nic.in'
+  },
+  CAPF_AC_UPSC: {
+    id: 'CAPF_AC_UPSC',
+    name: 'UPSC CAPF (Assistant Commandant)',
+    fullName: 'Central Armed Police Forces (Assistant Commandant) Examination (BSF, CRPF, CISF, ITBP, SSB)',
+    conductingBody: 'Union Public Service Commission (UPSC)',
+    targetLevel: 'POST_GRAD_JOB',
+    category: 'Paramilitary & Border Security Command',
+    eligibility: 'Bachelor’s Degree in any discipline from recognized university. Age: 20 to 25 years. Strict Physical Standards (Male: 165 cm, Female: 157 cm).',
+    examPattern: 'Paper I (General Ability & Intelligence - 250 marks) + Paper II (General Studies, Essay & Comprehension - 200 marks) -> Physical Efficiency Test (PET: 100m sprint, 800m run, Long Jump, Shot Put) -> Interview (150 marks).',
+    annualApplicants: '~3,00,000 candidates for ~400 to 500 Assistant Commandant vacancies',
+    acceptanceRate: '0.15%',
+    competitionLevel: 'EXTREME',
+    syllabusHighlights: ['General Mental Ability & Quantitative Aptitude', 'Indian Polity, History & Security Challenges', 'Physical Efficiency: 100m in 16s, 800m in 3m45s, Long Jump 3.5m', 'Internal Security, Border Management & Tactical Defense'],
+    keyDatesInfo: 'Notification: April | Written Exam: August | PET & Interviews: Jan-April',
+    officialUrl: 'https://upsc.gov.in'
   }
 };

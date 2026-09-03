@@ -43,10 +43,10 @@ export const DomainChips: React.FC = () => {
         {/* All Domains Tab */}
         <button
           onClick={() => setSelectedDomain('all')}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
             selectedDomain === 'all'
-              ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 border border-indigo-400/40'
-              : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700'
+              ? 'bg-orange-500 text-white shadow-md shadow-orange-500/25 border border-orange-400'
+              : 'bg-white hover:bg-orange-50 text-slate-700 border border-orange-200/80 shadow-sm'
           }`}
         >
           <Grid className="w-3.5 h-3.5" />
@@ -62,10 +62,10 @@ export const DomainChips: React.FC = () => {
             <button
               key={domain.id}
               onClick={() => setSelectedDomain(domain.id as DomainId)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                 isSelected
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 border border-indigo-400/40'
-                  : 'bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800/80 hover:border-slate-700'
+                  ? 'bg-orange-500 text-white shadow-md shadow-orange-500/25 border border-orange-400'
+                  : 'bg-white hover:bg-orange-50/80 text-slate-700 border border-slate-200 hover:border-orange-300 shadow-sm'
               }`}
             >
               <Icon 

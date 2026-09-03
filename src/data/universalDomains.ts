@@ -72,6 +72,7 @@ export const UNIVERSAL_DOMAINS: CareerDomain[] = [
     iconName: 'Plane',
     accentColor: '#0284c7',
     popularRoles: [
+      { id: 'soldier_defense_forces', title: 'Soldier & Special Forces Commando (Army/NDA)', slug: 'soldier-defense-forces' },
       { id: 'commercial_pilot', title: 'Commercial Airline Pilot (CPL)', slug: 'commercial-pilot' },
       { id: 'iaf_fighter_pilot', title: 'IAF Fighter Pilot / Armed Forces Officer (NDA)', slug: 'fighter-pilot-nda' },
       { id: 'merchant_navy_officer', title: 'Merchant Navy Deck Navigation Officer', slug: 'merchant-navy' },

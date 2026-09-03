@@ -67,9 +67,9 @@ export const usePathwayStore = create<PathwayState>()(
       isComparatorOpen: false,
       isCustomRoleLoading: false,
 
-      bookmarkedRoleIds: ['film_director', 'ai_engineer', 'commercial_pilot'],
+      bookmarkedRoleIds: ['soldier_defense_forces', 'vlsi_semiconductor_engineer', 'civil_services_officer', 'film_director', 'commercial_pilot'],
       geminiApiKey: '',
-      themeMode: 'dark',
+      themeMode: 'light',
 
       navigateToHome: () => {
         set({ currentView: 'home' });

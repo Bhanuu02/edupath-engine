@@ -3,7 +3,6 @@ import { Search, Sparkles, Loader2, X, Compass, TrendingUp } from 'lucide-react'
 import { usePathwayStore } from '../../store/pathwayStore';
 import { useCareerSearch } from '../../hooks/useCareerSearch';
 import { FuzzyAutocomplete } from './FuzzyAutocomplete';
-import { DomainChips } from './DomainChips';
 
 const POPULAR_TAGS = [
   'Film Director',
@@ -87,8 +86,9 @@ export const HeroSearch: React.FC = () => {
           </span>
         </h1>
         
-        <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
-          Type any dream role—from <strong>Film Director</strong>, <strong>Actor</strong>, and <strong>Pilot</strong> to <strong>Corporate Lawyer</strong>, <strong>Chef</strong>, and <strong>AI Scientist</strong>. Our NLP engine breaks it into parallel MPC, BiPC, MEC, HEC, and Polytechnic pathways with entrance exams and lateral bridges.
+        {/* Simple one-liner subtitle */}
+        <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto leading-relaxed">
+          Tell us what you like, and we'll show you what career path is best for you
         </p>
 
         {/* Universal Search Input */}
@@ -175,11 +175,6 @@ export const HeroSearch: React.FC = () => {
               {tag}
             </button>
           ))}
-        </div>
-
-        {/* Domain Filter Carousel */}
-        <div className="pt-4 max-w-4xl mx-auto">
-          <DomainChips />
         </div>
 
       </div>

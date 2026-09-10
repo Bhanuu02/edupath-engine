@@ -3,45 +3,31 @@ import { usePathwayStore } from '../../store/pathwayStore';
 import { useCareerSearch } from '../../hooks/useCareerSearch';
 import { FlowTreeGraph } from './FlowTreeGraph';
 import { FuzzyAutocomplete } from '../search/FuzzyAutocomplete';
-import { 
-  ArrowLeft, 
-  Search, 
-  Compass, 
-  Sparkles, 
-  Layers, 
-  FileDown, 
-  HelpCircle, 
-  ChevronRight,
-  Home,
-  X,
-  Loader2
+import { SimilarRolesComparator } from '../comparator/SimilarRolesComparator';
+import {
+  ArrowLeft, Search, FileDown, Layers,
+  ChevronRight, X, Bookmark, BookmarkCheck
 } from 'lucide-react';
 
 export const PathwayDetailView: React.FC = () => {
-  const { 
-    activeRole, 
-    navigateToHome, 
-    setComparatorOpen, 
-    setExportModalOpen, 
-    setCopilotOpen,
-    setStreamQuizOpen,
-    searchQuery,
-    setSearchQuery,
-    isCustomRoleLoading
+  const {
+    activeRole, navigateToHome, setComparatorOpen, setExportModalOpen,
+    searchQuery, setSearchQuery, isCustomRoleLoading,
+    bookmarkedRoleIds, toggleBookmark
   } = usePathwayStore();
 
   const { searchRoles, selectOrGenerateRole } = useCareerSearch();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [showSimilarComparator, setShowSimilarComparator] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
-  const { candidates: matchedCandidates, intent } = searchRoles(searchQuery);
+  const { candidates: matchedCandidates } = searchRoles(searchQuery);
+  const isBookmarked = bookmarkedRoleIds.includes(activeRole.id);
 
-  // Close search dropdown on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node))
         setIsSearchOpen(false);
-      }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -52,40 +38,31 @@ export const PathwayDetailView: React.FC = () => {
     setSearchQuery(candidate.title);
     await selectOrGenerateRole(candidate);
   };
-
-  const handleCustomGenerate = async (customQuery: string) => {
+  const handleCustomGenerate = async (q: string) => {
     setIsSearchOpen(false);
-    await selectOrGenerateRole(customQuery);
+    await selectOrGenerateRole(q);
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
     setIsSearchOpen(false);
-    if (matchedCandidates.length > 0) {
-      await handleSelectCandidate(matchedCandidates[0]);
-    } else {
-      await handleCustomGenerate(searchQuery);
-    }
+    if (matchedCandidates.length > 0) await handleSelectCandidate(matchedCandidates[0]);
+    else await handleCustomGenerate(searchQuery);
   };
 
   return (
     <div className="w-full space-y-6 pb-20 bg-gradient-to-b from-orange-50/40 via-white to-orange-50/30 text-slate-800">
-      
-      {/* Top Breadcrumb & Rapid Search Bar */}
-      <div className="sticky top-16 z-30 bg-white/90 backdrop-blur-md border-b border-orange-200/80 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-3">
-          
-          {/* Back to Home & Breadcrumb */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={navigateToHome}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-orange-600 hover:bg-orange-50 transition-colors border border-orange-200/80 bg-white shadow-xs cursor-pointer"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back</span>
-            </button>
 
+      {/* Sticky breadcrumb / toolbar */}
+      <div className="sticky top-16 z-30 bg-white/95 backdrop-blur-md border-b border-orange-200/80 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-3">
+
+          {/* Back + breadcrumb */}
+          <div className="flex items-center gap-2">
+            <button onClick={navigateToHome}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-orange-600 hover:bg-orange-50 transition-colors border border-orange-200 bg-white shadow-sm cursor-pointer">
+              <ArrowLeft className="w-3.5 h-3.5" /><span>Back</span>
+            </button>
             <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-500">
               <span className="hover:text-orange-600 cursor-pointer" onClick={navigateToHome}>Home</span>
               <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
@@ -93,37 +70,28 @@ export const PathwayDetailView: React.FC = () => {
             </div>
           </div>
 
-          {/* Quick In-Pathway Search Box */}
+          {/* Quick search */}
           <div ref={searchRef} className="relative flex-1 max-w-md">
-            <form onSubmit={handleSubmit} className="relative">
-              <div className="flex items-center bg-orange-50/50 rounded-xl px-3 py-1.5 border border-orange-200 focus-within:border-orange-500 focus-within:bg-white transition-all">
+            <form onSubmit={handleSubmit}>
+              <div className="flex items-center bg-white rounded-xl px-3 py-1.5 border border-orange-200 focus-within:border-orange-500 focus-within:shadow-md focus-within:shadow-orange-100 transition-all">
                 <Search className="w-4 h-4 text-orange-500 mr-2 shrink-0" />
                 <input
                   type="text"
                   value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setIsSearchOpen(true);
-                  }}
+                  onChange={e => { setSearchQuery(e.target.value); setIsSearchOpen(true); }}
                   onFocus={() => setIsSearchOpen(true)}
                   placeholder="Switch career (e.g. Soldier, VLSI, Civils, Pilot)..."
-                  className="w-full bg-transparent text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                  className="w-full bg-transparent text-xs sm:text-sm placeholder:text-slate-400 focus:outline-none"
+                  style={{ color: '#1f2937' }}
                 />
                 {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSearchQuery('');
-                      setIsSearchOpen(false);
-                    }}
-                    className="p-1 text-slate-400 hover:text-slate-700"
-                  >
+                  <button type="button" onClick={() => { setSearchQuery(''); setIsSearchOpen(false); }}
+                    className="p-1 text-slate-400 hover:text-slate-700 cursor-pointer">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
             </form>
-
             <FuzzyAutocomplete
               candidates={matchedCandidates}
               query={searchQuery}
@@ -133,32 +101,56 @@ export const PathwayDetailView: React.FC = () => {
             />
           </div>
 
-          {/* Quick Action Tools */}
+          {/* Right-side actions */}
           <div className="flex items-center gap-2">
+
+            {/* Bookmark toggle */}
             <button
-              onClick={() => setComparatorOpen(true)}
-              className="p-2 sm:px-3 sm:py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-orange-700 bg-white hover:bg-orange-50 border border-orange-200 shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
-              title="Compare all 6 streams side-by-side"
+              onClick={() => toggleBookmark(activeRole.id)}
+              className={`p-2 sm:px-3 sm:py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-colors cursor-pointer ${
+                isBookmarked
+                  ? 'bg-orange-100 text-orange-700 border-orange-400 hover:bg-orange-200'
+                  : 'bg-white text-slate-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700'
+              }`}
+              title={isBookmarked ? 'Remove bookmark' : 'Save this career'}
             >
-              <Layers className="w-3.5 h-3.5 text-orange-500" />
-              <span className="hidden md:inline">Compare</span>
+              {isBookmarked
+                ? <BookmarkCheck className="w-3.5 h-3.5 fill-orange-500" />
+                : <Bookmark className="w-3.5 h-3.5" />
+              }
+              <span className="hidden md:inline">{isBookmarked ? 'Saved' : 'Save'}</span>
             </button>
 
+            {/* Compare similar roles in same domain */}
+            <button
+              onClick={() => setShowSimilarComparator(true)}
+              className="p-2 sm:px-3 sm:py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-orange-700 bg-white hover:bg-orange-50 border border-orange-200 shadow-sm transition-colors cursor-pointer flex items-center gap-1.5"
+              title="Compare similar paths in the same domain"
+            >
+              <Layers className="w-3.5 h-3.5 text-orange-500" />
+              <span className="hidden md:inline">Similar Paths</span>
+            </button>
+
+            {/* Export PDF */}
             <button
               onClick={() => setExportModalOpen(true)}
-              className="p-2 sm:px-3 sm:py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-emerald-700 bg-white hover:bg-emerald-50 border border-slate-200 shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
+              className="p-2 sm:px-3 sm:py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-orange-700 bg-white hover:bg-orange-50 border border-orange-200 shadow-sm transition-colors cursor-pointer flex items-center gap-1.5"
               title="Export as PDF"
             >
-              <FileDown className="w-3.5 h-3.5 text-emerald-600" />
+              <FileDown className="w-3.5 h-3.5 text-orange-500" />
               <span className="hidden md:inline">Export</span>
             </button>
           </div>
-
         </div>
       </div>
 
-      {/* Main Roadmap Tree Flow View */}
+      {/* Main Roadmap */}
       <FlowTreeGraph />
+
+      {/* Scoped similar-roles comparator */}
+      {showSimilarComparator && (
+        <SimilarRolesComparator onClose={() => setShowSimilarComparator(false)} />
+      )}
 
     </div>
   );

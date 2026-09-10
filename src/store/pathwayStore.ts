@@ -22,6 +22,7 @@ interface PathwayState {
   isExportModalOpen: boolean;
   isCopilotOpen: boolean;
   isComparatorOpen: boolean;
+  isPassionCompareOpen: boolean;
   isCustomRoleLoading: boolean;
 
   // Persisted state
@@ -43,6 +44,7 @@ interface PathwayState {
   setExportModalOpen: (open: boolean) => void;
   setCopilotOpen: (open: boolean) => void;
   setComparatorOpen: (open: boolean) => void;
+  setPassionCompareOpen: (open: boolean) => void;
   setCustomRoleLoading: (loading: boolean) => void;
 
   toggleBookmark: (roleId: string) => void;
@@ -65,6 +67,7 @@ export const usePathwayStore = create<PathwayState>()(
       isExportModalOpen: false,
       isCopilotOpen: false,
       isComparatorOpen: false,
+      isPassionCompareOpen: false,
       isCustomRoleLoading: false,
 
       bookmarkedRoleIds: ['soldier_defense_forces', 'vlsi_semiconductor_engineer', 'civil_services_officer', 'film_director', 'commercial_pilot'],
@@ -72,7 +75,7 @@ export const usePathwayStore = create<PathwayState>()(
       themeMode: 'light',
 
       navigateToHome: () => {
-        set({ currentView: 'home' });
+        set({ currentView: 'home', searchQuery: '' });
         window.scrollTo({ top: 0, behavior: 'smooth' });
       },
 
@@ -125,6 +128,7 @@ export const usePathwayStore = create<PathwayState>()(
       setExportModalOpen: (open) => set({ isExportModalOpen: open }),
       setCopilotOpen: (open) => set({ isCopilotOpen: open }),
       setComparatorOpen: (open) => set({ isComparatorOpen: open }),
+      setPassionCompareOpen: (open) => set({ isPassionCompareOpen: open }),
       setCustomRoleLoading: (loading) => set({ isCustomRoleLoading: loading }),
 
       toggleBookmark: (roleId) => {

@@ -104,27 +104,13 @@
   background: radial-gradient(circle at 50% 0%, rgba(254, 215, 170, 0.45) 0%, rgba(255, 247, 237, 0.3) 50%, rgba(255, 255, 255, 0) 80%);
 }
 
-/* 3D Perspective & Depth Transforms */
-.perspective-3d {
-  perspective: 1200px;
-  transform-style: preserve-3d;
-}
-
-.preserve-3d {
-  transform-style: preserve-3d;
-}
-
-.rotate-x-12 {
-  transform: perspective(1000px) rotateX(12deg);
-}
-
-.card-3d-hover {
+.card-hover-elevate {
   transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
 }
 
-.card-3d-hover:hover {
-  transform: perspective(1000px) translateY(-6px) translateZ(12px) rotateX(2deg);
-  box-shadow: 0 20px 40px -15px rgba(249, 115, 22, 0.2);
+.card-hover-elevate:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -15px rgba(249, 115, 22, 0.15);
 }
 
 .mesh-grid {

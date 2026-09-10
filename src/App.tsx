@@ -4,6 +4,7 @@ import { Navbar } from './components/common/Navbar';
 import { HomeLandingView } from './components/home/HomeLandingView';
 import { PathwayDetailView } from './components/pathways/PathwayDetailView';
 import { RouteComparatorMatrix } from './components/comparator/RouteComparatorMatrix';
+import { PassionCompareModal } from './components/modals/PassionCompareModal';
 import { ExamDetailModal } from './components/modals/ExamDetailModal';
 import { StreamQuizModal } from './components/modals/StreamQuizModal';
 import { ExportPdfModal } from './components/modals/ExportPdfModal';
@@ -29,6 +30,7 @@ export const App: React.FC = () => {
 
       {/* Interactive Modals and Drawers */}
       <RouteComparatorMatrix />
+      <PassionCompareModal />
       <ExamDetailModal />
       <StreamQuizModal />
       <ExportPdfModal />

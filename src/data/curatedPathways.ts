@@ -7,6 +7,13 @@ import { VLSI_ENGINEER_PATHWAY } from './pathways/semiconductorVlsi';
 import { PHOTOGRAPHY_PATHWAY } from './pathways/photographyVisual';
 import { CIVIL_SERVICES_PATHWAY } from './pathways/civilServicesGov';
 import { SOLDIER_DEFENSE_PATHWAY } from './pathways/defenseSoldierFitness';
+import { ENGINEERING_TECH_PATHWAYS } from './pathways/engineeringTech';
+import { MEDICAL_HEALTH_PATHWAYS } from './pathways/medicalHealthSciences';
+import { BUSINESS_COMMERCE_PATHWAYS } from './pathways/businessCommerce';
+import { SPORTS_FITNESS_PATHWAYS } from './pathways/sportsFitness';
+import { CREATIVE_DESIGN_PATHWAYS } from './pathways/creativeDesign';
+import { ACADEMIC_RESEARCH_PATHWAYS } from './pathways/academicResearchServices';
+import { VOCATIONAL_MARITIME_PATHWAYS } from './pathways/vocationalAviationMaritime';
 
 // Base Pathways (Film Director, Actor, AI Engineer)
 const STREAM_THEMES = {
@@ -1004,6 +1011,13 @@ export const CURATED_CAREER_PATHWAYS: Record<string, CareerRole> = {
   ...AVIATION_DEFENSE_PATHWAYS,
   ...LAW_CIVIL_PATHWAYS,
   ...CULINARY_HOSPITALITY_PATHWAYS,
+  ...ENGINEERING_TECH_PATHWAYS,
+  ...MEDICAL_HEALTH_PATHWAYS,
+  ...BUSINESS_COMMERCE_PATHWAYS,
+  ...SPORTS_FITNESS_PATHWAYS,
+  ...CREATIVE_DESIGN_PATHWAYS,
+  ...ACADEMIC_RESEARCH_PATHWAYS,
+  ...VOCATIONAL_MARITIME_PATHWAYS,
   vlsi_semiconductor_engineer: VLSI_ENGINEER_PATHWAY,
   professional_photographer: PHOTOGRAPHY_PATHWAY,
   civil_services_officer: CIVIL_SERVICES_PATHWAY,

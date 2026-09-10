@@ -3,11 +3,13 @@ import { usePathwayStore } from '../../store/pathwayStore';
 import { useCareerSearch } from '../../hooks/useCareerSearch';
 import { FlowTreeGraph } from './FlowTreeGraph';
 import { FuzzyAutocomplete } from '../search/FuzzyAutocomplete';
-import { SimilarRolesComparator } from '../comparator/SimilarRolesComparator';
 import {
   ArrowLeft, Search, FileDown, Layers,
   ChevronRight, X, Bookmark, BookmarkCheck
 } from 'lucide-react';
+
+import { PassionCompareView } from '../comparator/PassionCompareView';
+import { PASSION_COMPARISON_MATRIX, PassionCluster } from '../../data/passionMatrix';
 
 export const PathwayDetailView: React.FC = () => {
   const {
@@ -18,16 +20,31 @@ export const PathwayDetailView: React.FC = () => {
 
   const { searchRoles, selectOrGenerateRole } = useCareerSearch();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [showSimilarComparator, setShowSimilarComparator] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
   const { candidates: matchedCandidates } = searchRoles(searchQuery);
   const isBookmarked = bookmarkedRoleIds.includes(activeRole.id);
 
+  // Find if active role belongs to a passion cluster
+  const relatedPassion = PASSION_COMPARISON_MATRIX.find(cluster => 
+    cluster.options.some(opt => opt.roleId === activeRole.id) ||
+    cluster.keywords.some(kw => activeRole.tags?.some(t => t.toLowerCase().includes(kw)))
+  ) || PASSION_COMPARISON_MATRIX[0];
+
+  const [currentPassionCluster, setCurrentPassionCluster] = useState<PassionCluster>(relatedPassion);
+
+  useEffect(() => {
+    if (relatedPassion) {
+      setCurrentPassionCluster(relatedPassion);
+    }
+  }, [activeRole.id]);
+
+  // Close search dropdown on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node))
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setIsSearchOpen(false);
+      }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -38,30 +55,38 @@ export const PathwayDetailView: React.FC = () => {
     setSearchQuery(candidate.title);
     await selectOrGenerateRole(candidate);
   };
+
   const handleCustomGenerate = async (q: string) => {
     setIsSearchOpen(false);
     await selectOrGenerateRole(q);
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
     setIsSearchOpen(false);
-    if (matchedCandidates.length > 0) await handleSelectCandidate(matchedCandidates[0]);
-    else await handleCustomGenerate(searchQuery);
+    if (matchedCandidates.length > 0) {
+      await handleSelectCandidate(matchedCandidates[0]);
+    } else {
+      await handleCustomGenerate(searchQuery);
+    }
   };
 
   return (
-    <div className="w-full space-y-6 pb-20 bg-gradient-to-b from-orange-50/40 via-white to-orange-50/30 text-slate-800">
-
+    <div className="w-full space-y-8 pb-20 bg-gradient-to-b from-orange-50/40 via-white to-orange-50/30 text-slate-800">
+      
       {/* Sticky breadcrumb / toolbar */}
       <div className="sticky top-16 z-30 bg-white/95 backdrop-blur-md border-b border-orange-200/80 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-3">
 
           {/* Back + breadcrumb */}
           <div className="flex items-center gap-2">
-            <button onClick={navigateToHome}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-orange-600 hover:bg-orange-50 transition-colors border border-orange-200 bg-white shadow-sm cursor-pointer">
-              <ArrowLeft className="w-3.5 h-3.5" /><span>Back</span>
+            <button
+              onClick={navigateToHome}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-orange-600 hover:bg-orange-50 transition-colors border border-orange-200 bg-white shadow-sm cursor-pointer"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back</span>
             </button>
             <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-500">
               <span className="hover:text-orange-600 cursor-pointer" onClick={navigateToHome}>Home</span>
@@ -85,8 +110,11 @@ export const PathwayDetailView: React.FC = () => {
                   style={{ color: '#1f2937' }}
                 />
                 {searchQuery && (
-                  <button type="button" onClick={() => { setSearchQuery(''); setIsSearchOpen(false); }}
-                    className="p-1 text-slate-400 hover:text-slate-700 cursor-pointer">
+                  <button
+                    type="button"
+                    onClick={() => { setSearchQuery(''); setIsSearchOpen(false); }}
+                    className="p-1 text-slate-400 hover:text-slate-700 cursor-pointer"
+                  >
                     <X className="w-3.5 h-3.5" />
                   </button>
                 )}
@@ -121,14 +149,14 @@ export const PathwayDetailView: React.FC = () => {
               <span className="hidden md:inline">{isBookmarked ? 'Saved' : 'Save'}</span>
             </button>
 
-            {/* Compare similar roles in same domain */}
+            {/* Compare 6 streams */}
             <button
-              onClick={() => setShowSimilarComparator(true)}
+              onClick={() => setComparatorOpen(true)}
               className="p-2 sm:px-3 sm:py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-orange-700 bg-white hover:bg-orange-50 border border-orange-200 shadow-sm transition-colors cursor-pointer flex items-center gap-1.5"
-              title="Compare similar paths in the same domain"
+              title="Compare all 6 stream blueprints side-by-side"
             >
               <Layers className="w-3.5 h-3.5 text-orange-500" />
-              <span className="hidden md:inline">Similar Paths</span>
+              <span className="hidden md:inline">Compare</span>
             </button>
 
             {/* Export PDF */}
@@ -144,13 +172,16 @@ export const PathwayDetailView: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Roadmap */}
+      {/* Main Roadmap Tree Flow View */}
       <FlowTreeGraph />
 
-      {/* Scoped similar-roles comparator */}
-      {showSimilarComparator && (
-        <SimilarRolesComparator onClose={() => setShowSimilarComparator(false)} />
-      )}
+      {/* Cross-Domain Passion Comparison Section */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <PassionCompareView 
+          cluster={currentPassionCluster} 
+          onSelectPassion={(cluster) => setCurrentPassionCluster(cluster)}
+        />
+      </div>
 
     </div>
   );

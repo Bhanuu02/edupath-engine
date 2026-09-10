@@ -14,9 +14,7 @@ import {
   Briefcase,
   AlertTriangle,
   Scale,
-  GraduationCap,
-  Boxes,
-  Rotate3d
+  GraduationCap
 } from 'lucide-react';
 
 export const FlowTreeGraph: React.FC = () => {
@@ -28,9 +26,6 @@ export const FlowTreeGraph: React.FC = () => {
     setComparatorOpen,
     setCopilotOpen
   } = usePathwayStore();
-
-  const [is3DMode, setIs3DMode] = useState(false);
-  const [spatialRotation, setSpatialRotation] = useState({ x: 10, y: -4 });
 
   const isBookmarked = bookmarkedRoleIds.includes(activeRole.id);
   const fallbackStream = {
@@ -131,43 +126,27 @@ export const FlowTreeGraph: React.FC = () => {
 
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex md:flex-col items-center gap-2 shrink-0 self-start md:self-auto">
-            
-            {/* 3D Spatial Toggle Button */}
-            <button
-              onClick={() => setIs3DMode(!is3DMode)}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer shadow-sm ${
-                is3DMode
-                  ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white border-orange-400 shadow-md shadow-orange-500/30'
-                  : 'bg-white hover:bg-orange-50 text-orange-600 border-orange-200'
-              }`}
-              title="Toggle 3D Spatial Matrix view"
-            >
-              <Boxes className="w-4 h-4" />
-              <span>{is3DMode ? '3D Active' : '3D View'}</span>
-            </button>
-
+          {/* Action Buttons: Saved & Ask AI Copilot */}
+          <div className="flex items-center gap-2.5 shrink-0 self-start md:self-auto">
             <button
               onClick={() => toggleBookmark(activeRole.id)}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer shadow-sm ${
+              className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer shadow-sm ${
                 isBookmarked
                   ? 'bg-amber-100 text-amber-800 border-amber-300'
                   : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
               }`}
             >
               <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-amber-500 text-amber-500' : ''}`} />
-              <span>{isBookmarked ? 'Saved' : 'Bookmark'}</span>
+              <span>{isBookmarked ? 'Saved' : 'Save Pathway'}</span>
             </button>
 
             <button
               onClick={() => setCopilotOpen(true)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-md shadow-orange-500/20 border border-orange-400/30 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-md shadow-orange-500/20 border border-orange-400/30 transition-all cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-200" />
               <span>Ask AI Copilot</span>
             </button>
-
           </div>
 
         </div>
@@ -253,46 +232,8 @@ export const FlowTreeGraph: React.FC = () => {
         </button>
       </div>
 
-      {/* 3D Spatial Controls Bar when 3D Mode is Enabled */}
-      {is3DMode && (
-        <div className="p-3.5 rounded-2xl bg-orange-50 border border-orange-300 flex flex-wrap items-center justify-between gap-3 text-xs text-orange-900 animate-in fade-in zoom-in-95 shadow-sm">
-          <div className="flex items-center gap-2">
-            <Rotate3d className="w-4 h-4 text-orange-600 animate-spin" style={{ animationDuration: '6s' }} />
-            <span><strong>3D Spatial Perspective View Active:</strong> Experience depth transformations and node elevation.</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setSpatialRotation(prev => ({ ...prev, x: prev.x + 4 }))}
-              className="px-2.5 py-1 rounded-lg bg-white hover:bg-orange-100 border border-orange-200 text-orange-800 cursor-pointer shadow-sm"
-            >
-              Tilt +X
-            </button>
-            <button
-              onClick={() => setSpatialRotation(prev => ({ ...prev, x: Math.max(0, prev.x - 4) }))}
-              className="px-2.5 py-1 rounded-lg bg-white hover:bg-orange-100 border border-orange-200 text-orange-800 cursor-pointer shadow-sm"
-            >
-              Tilt -X
-            </button>
-            <button
-              onClick={() => setSpatialRotation({ x: 0, y: 0 })}
-              className="px-2.5 py-1 rounded-lg bg-white hover:bg-orange-100 border border-orange-200 text-slate-600 cursor-pointer shadow-sm"
-            >
-              Reset 3D
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* 4. Chronological Milestone Tree Container */}
-      <div 
-        className={`space-y-2 pt-2 transition-all duration-500 ${
-          is3DMode ? 'origin-top' : ''
-        }`}
-        style={is3DMode ? {
-          transform: `perspective(1200px) rotateX(${spatialRotation.x}deg) rotateY(${spatialRotation.y}deg)`,
-          transformStyle: 'preserve-3d'
-        } : undefined}
-      >
+      <div className="space-y-2 pt-2">
         <div className="flex items-center justify-between border-b border-orange-200/70 pb-2">
           <span className="text-xs font-bold uppercase tracking-wider text-orange-700 flex items-center gap-1.5">
             <Clock className="w-4 h-4 text-orange-500" />

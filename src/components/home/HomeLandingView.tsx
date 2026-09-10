@@ -1,39 +1,63 @@
 import React from 'react';
 import { HeroSearch } from '../search/HeroSearch';
 import { usePathwayStore } from '../../store/pathwayStore';
-import { HelpCircle, BarChart2 } from 'lucide-react';
+import { HelpCircle, Scale } from 'lucide-react';
 
 export const HomeLandingView: React.FC = () => {
-  const { setStreamQuizOpen, setComparatorOpen } = usePathwayStore();
+  const { setStreamQuizOpen, setPassionCompareOpen } = usePathwayStore();
 
   return (
-    <div className="w-full pb-16">
-      <HeroSearch />
-      <div className="max-w-xl mx-auto px-4 pt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+    <div className="w-full min-h-[calc(100vh-4rem)] flex flex-col justify-between bg-gradient-to-b from-orange-50/40 via-white to-orange-50/30 text-slate-800">
+      
+      {/* 1. Hero Search Section */}
+      <div className="w-full">
+        <HeroSearch />
 
-        <button onClick={() => setStreamQuizOpen(true)}
-          className="w-full sm:w-auto flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-sm shadow-xl shadow-orange-300/40 transition-all cursor-pointer">
-          <span className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-            <HelpCircle className="w-5 h-5" />
-          </span>
-          <span className="text-left leading-tight">
-            <span className="block text-base font-extrabold">Take a Quiz</span>
-            <span className="block text-xs font-normal text-orange-100">Find your best career path</span>
-          </span>
-        </button>
+        {/* 2. Compact Primary CTA Cards */}
+        <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-14">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            {/* CTA Card 1: Take a Quiz */}
+            <button 
+              onClick={() => setStreamQuizOpen(true)}
+              className="bg-white rounded-2xl p-5 border border-orange-200/90 hover:border-orange-400 shadow-sm hover:shadow-md hover:shadow-orange-500/10 transition-all duration-200 flex items-center gap-4 text-left cursor-pointer group"
+            >
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white shrink-0 shadow-sm shadow-orange-500/20 group-hover:scale-105 transition-transform">
+                <HelpCircle className="w-6 h-6 text-white" />
+              </div>
+              <div className="space-y-0.5">
+                <h3 className="text-base font-bold text-slate-900 group-hover:text-orange-600 transition-colors font-display">
+                  Take a Quiz
+                </h3>
+                <p className="text-xs text-slate-500 leading-snug">
+                  Find your best career path.
+                </p>
+              </div>
+            </button>
 
-        <button onClick={() => setComparatorOpen(true)}
-          className="w-full sm:w-auto flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-white hover:bg-orange-50 border-2 border-orange-300 hover:border-orange-500 text-slate-800 font-bold text-sm shadow-xl transition-all cursor-pointer">
-          <span className="w-9 h-9 rounded-xl bg-orange-100 border border-orange-300 flex items-center justify-center shrink-0 text-orange-600">
-            <BarChart2 className="w-5 h-5" />
-          </span>
-          <span className="text-left leading-tight">
-            <span className="block text-base font-extrabold text-slate-900">Compare Paths</span>
-            <span className="block text-xs font-normal text-slate-500">See which path suits you best</span>
-          </span>
-        </button>
+            {/* CTA Card 2: Compare Paths */}
+            <button 
+              onClick={() => setPassionCompareOpen(true)}
+              className="bg-white rounded-2xl p-5 border border-orange-200/90 hover:border-orange-400 shadow-sm hover:shadow-md hover:shadow-orange-500/10 transition-all duration-200 flex items-center gap-4 text-left cursor-pointer group"
+            >
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white shrink-0 shadow-sm shadow-amber-500/20 group-hover:scale-105 transition-transform">
+                <Scale className="w-6 h-6 text-white" />
+              </div>
+              <div className="space-y-0.5">
+                <h3 className="text-base font-bold text-slate-900 group-hover:text-orange-600 transition-colors font-display">
+                  Compare Paths
+                </h3>
+                <p className="text-xs text-slate-500 leading-snug">
+                  See which path suits you best.
+                </p>
+              </div>
+            </button>
 
+          </div>
+        </section>
       </div>
+
+      <div />
     </div>
   );
 };

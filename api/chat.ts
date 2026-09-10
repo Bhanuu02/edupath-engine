@@ -35,7 +35,7 @@ export default async function handler(req: any, res: any) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: fullPrompt }] }],
-          generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
+          generationConfig: { temperature: 0.5, maxOutputTokens: 600 }
         })
       }
     );
@@ -49,7 +49,7 @@ export default async function handler(req: any, res: any) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             contents: [{ parts: [{ text: fullPrompt }] }],
-            generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
+            generationConfig: { temperature: 0.5, maxOutputTokens: 600 }
           })
         }
       );

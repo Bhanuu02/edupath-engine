@@ -27,9 +27,9 @@ if not exist ".git" (
 )
 
 echo.
-echo [2/4] Staging and creating commit for Vercel build fix...
+echo [2/4] Staging and creating commit for all enhanced features...
 git add .
-git commit -m "fix(deps): remove invalid @google/genai package version and use zero-dependency Gemini REST client"
+git commit -m "feat: add post-degree & civil services exams, VLSI/photography pathways, branch choices, 3D spatial mode, and animated AI scanner"
 
 echo.
 echo [3/4] Checking remote origin...

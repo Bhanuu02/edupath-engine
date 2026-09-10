@@ -1,4 +1,5 @@
 import React from 'react';
+import { usePathwayStore } from './store/pathwayStore';
 import { Navbar } from './components/common/Navbar';
 import { HomeLandingView } from './components/home/HomeLandingView';
 import { PathwayDetailView } from './components/pathways/PathwayDetailView';
@@ -8,17 +9,16 @@ import { StreamQuizModal } from './components/modals/StreamQuizModal';
 import { ExportPdfModal } from './components/modals/ExportPdfModal';
 import { CareerCopilotModal } from './components/modals/CareerCopilotModal';
 import { Footer } from './components/common/Footer';
-import { usePathwayStore } from './store/pathwayStore';
 
 export const App: React.FC = () => {
   const { currentView } = usePathwayStore();
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-indigo-500 selection:text-white font-sans">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50/50 via-stone-50 to-orange-50/30 text-slate-800 flex flex-col selection:bg-orange-500 selection:text-white font-sans">
       {/* Top Fixed Header */}
       <Navbar />
 
-      {/* Main Content Area: Home Landing vs Dedicated Pathway View */}
+      {/* Main Content Area */}
       <main className="flex-1 w-full">
         {currentView === 'home' ? (
           <HomeLandingView />

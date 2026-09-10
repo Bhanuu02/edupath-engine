@@ -67,9 +67,9 @@ export const usePathwayStore = create<PathwayState>()(
       isComparatorOpen: false,
       isCustomRoleLoading: false,
 
-      bookmarkedRoleIds: ['film_director', 'ai_engineer', 'commercial_pilot'],
-      geminiApiKey: '',
-      themeMode: 'dark',
+      bookmarkedRoleIds: ['soldier_defense_forces', 'vlsi_semiconductor_engineer', 'civil_services_officer', 'film_director', 'commercial_pilot'],
+      geminiApiKey: (import.meta as any).env?.VITE_GEMINI_API_KEY || '',
+      themeMode: 'light',
 
       navigateToHome: () => {
         set({ currentView: 'home' });
@@ -100,10 +100,23 @@ export const usePathwayStore = create<PathwayState>()(
       setSelectedDomain: (domain) => set({ selectedDomain: domain }),
 
       openExamModalById: (examId) => {
-        const exam = COMPREHENSIVE_EXAMS[examId];
-        if (exam) {
-          set({ activeExam: exam, isExamModalOpen: true });
-        }
+        const cleanName = examId.replace(/_/g, ' ');
+        const exam = COMPREHENSIVE_EXAMS[examId] || {
+          id: examId,
+          name: cleanName,
+          fullName: `${cleanName} National Examination & Gateway`,
+          conductingBody: 'National / State Accredited Examining Body',
+          targetLevel: 'GRADUATE',
+          category: 'Competitive Gateway & Admissions',
+          eligibility: 'Qualifying marks in relevant 10th, 12th, or Bachelor’s degree program from a recognized board/university.',
+          examPattern: 'Computer Based Test (CBT) or Descriptive Studio Audition evaluating core analytical, domain-specific, and problem-solving aptitude.',
+          annualApplicants: 'Competitive national testing pool',
+          acceptanceRate: 'Merit-based admission quota',
+          competitionLevel: 'VERY_HIGH',
+          syllabusHighlights: ['Core domain concepts & analytical problem solving', 'General mental ability & quantitative aptitude', 'Practical aptitude & domain fundamentals'],
+          keyDatesInfo: 'Annual national cycle (Notifications released periodically)'
+        };
+        set({ activeExam: exam, isExamModalOpen: true });
       },
 
       closeExamModal: () => set({ isExamModalOpen: false, activeExam: null }),
